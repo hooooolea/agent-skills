@@ -1,3 +1,5 @@
+English | [中文](README_zh.md)
+
 <div align="center">
 
 # Session Summary
