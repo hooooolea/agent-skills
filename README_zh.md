@@ -6,6 +6,8 @@
 
 _给你的 AI Agent 加个存档点。任何会话都能秒速续上。_
 
+![完整测评见 ejuerz.com](assets/blog-preview.png)
+
 </div>
 
 ---

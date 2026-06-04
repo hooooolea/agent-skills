@@ -6,6 +6,8 @@ English | [中文](README_zh.md)
 
 _Checkpoint your AI agent's progress. Resume any session in seconds._
 
+![Blog write-up on ejuerz.com](assets/blog-preview.png)
+
 </div>
 
 ---
