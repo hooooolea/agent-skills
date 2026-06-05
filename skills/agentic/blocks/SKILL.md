@@ -33,7 +33,6 @@ metadata:
 > - `references/troubleshooting.md` — symptom→fix index for common blocks problems (layout, mouse, hermes, manager mode, lifecycle, **tmux server crash recovery**)
 > - `references/worker-missing-task-protocol.md` — fallback for workers when the Manager never dispatched a task
 > - `references/tmux-server-recovery.md` — full procedure for salvaging a manager session after the tmux server dies mid-run (file-based recovery, marking workers PARTIAL/BLOCKED, deciding whether to restart)
-> - `references/tmux-server-recovery.md` — full procedure for salvaging a manager session after the tmux server dies mid-run (file-based recovery, marking workers PARTIAL/BLOCKED, deciding whether to restart)
 
 ## Overview
 
@@ -341,7 +340,7 @@ Your job:
 
 Timeout: 5-6 minutes per worker. Longer windows (10+ min) risk the macOS tmux
 server crashing mid-round, killing all workers with no recovery — see
-references/macos-tmux-crash-recovery.md and Pitfall 19. If `done/worker-N-start`
+references/tmux-server-recovery.md and Pitfall 19. If `done/worker-N-start`
 exists but `done/worker-N-final` is missing past 6 min, treat the worker as
 stalled. After timeout, report the stalled worker to the user and ask whether
 to continue waiting or proceed without them.
@@ -465,7 +464,11 @@ i=1
 for p in $ALL_PANES; do
   WORKER_PROMPT="You are worker-$i in blocks session $SESSION. \
 Read $SHARED/tasks/worker-$i.md. \
-On done: write $SHARED/results/worker-$i.md, then touch $SHARED/done/worker-$i."
+Protocol (REQUIRED): \
+  1. Within 30s of starting: touch $SHARED/done/worker-$i-start \
+  2. Read tasks/worker-$i.md, do the work, append to results/worker-$i.md \
+  3. When done: touch $SHARED/done/worker-$i-final \
+(start touch is the liveness signal — the Manager polls it; final touch means 'I finished')"
   tmux send-keys -t "$SESSION":1.$p "$WORKER_PROMPT" Enter
   i=$((i+1))
 done
@@ -555,11 +558,11 @@ The .command file on macOS is also double-clickable from Finder later if you wan
 
 **Detach without killing workers:** `Ctrl-b` then `d` inside the opened terminal. The workers keep running in the background. Re-attach any time with `/blocks attach` or `tmux attach -t <session>`.
 
-**Disable auto-open** (if you prefer to attach manually): wrap the call in your shell:
+**Disable auto-open** (if you prefer to attach manually): set the env var `DISABLE_BLOCKS_AUTOOPEN=1` before running `/blocks --manager`:
 ```bash
 DISABLE_BLOCKS_AUTOOPEN=1 /blocks --manager
 ```
-The handler respects this env var (currently honoured by the recipe's own checks; see [Pitfall](#common-pitfalls) for the gate variable name).
+The handler checks for this exact env var name at startup; if set, it skips writing the .command file and printing the attach instructions, and workers keep running headless.
 
 ### Recovery from tmux server death (file-based salvage)
 
@@ -668,7 +671,7 @@ tmux split-window -h -t "$SESSION":1.$RIGHT
 tmux select-pane -t "$SESSION":1.$NEW -T "worker-$NEW"
 tmux send-keys -t "$SESSION":1.$NEW 'hermes' Enter
 sleep 6
-tmux send-keys -t "$SESSION":1.$NEW "You are worker-$NEW in $SESSION. Read $SHARED/tasks/worker-$NEW.md. On done: write $SHARED/results/worker-$NEW.md, then touch $SHARED/done/worker-$NEW." Enter
+tmux send-keys -t "$SESSION":1.$NEW "You are worker-$NEW in $SESSION. Read $SHARED/tasks/worker-$NEW.md. Protocol (REQUIRED): (1) Within 30s of starting: touch $SHARED/done/worker-$NEW-start; (2) do the work, append to results/worker-$NEW.md; (3) when done: touch $SHARED/done/worker-$NEW-final. Start touch = liveness; final touch = finished." Enter
 
 # Re-balance sizes (NO select-layout tiled — it would re-compute the grid)
 W=220; H=50
@@ -967,7 +970,7 @@ tmux send-keys -t "$SESSION":1.2 'hermes -p reviewer -w' Enter
 
 18. **`hermes chat` has no `--system-note` flag** — earlier drafts of this skill assumed a flag like `hermes --system-note '...'` could inject a role prompt at startup. It doesn't exist. The verified working pattern is: send `hermes` to the pane, wait 6s for prompt_toolkit to render, then send the role text as the first user message via `tmux send-keys -t "$SESSION":1.$i "You are ..." Enter`. The role then becomes the first entry in the conversation history, which the agent sees and obeys.
 
-19. **macOS tmux server crashes after ~10 minutes of detached running** — On macOS Sonoma/Sequoia, a `tmux new-session -d` session that holds 4 hermes workers (each compiling/running tests, doing heavy shell work) can crash the entire tmux server around the 10-11 minute mark. Symptoms: `tmux list-sessions` returns `no server running on /private/tmp/tmux-501/default`, all worker hermes subprocesses vanish, pane capture returns blank. **This is NOT recoverable** — the workers and their in-memory state are gone. See `references/macos-tmux-crash-recovery.md` for the full diagnosis and protocol. **Mitigations baked into the skill**:
+19. **macOS tmux server crashes after ~10 minutes of detached running** — On macOS Sonoma/Sequoia, a `tmux new-session -d` session that holds 4 hermes workers (each compiling/running tests, doing heavy shell work) can crash the entire tmux server around the 10-11 minute mark. Symptoms: `tmux list-sessions` returns `no server running on /private/tmp/tmux-501/default`, all worker hermes subprocesses vanish, pane capture returns blank. **This is NOT recoverable** — the workers and their in-memory state are gone. See `references/tmux-server-recovery.md` for the full diagnosis and protocol. **Mitigations baked into the skill**:
     - Cap single-round task time at **5-6 minutes** (not the 10-min default the recipe used to suggest)
     - Workers must **`touch done-start` within 30s** of starting — that file is the only post-mortem signal that the worker received and began the task
     - Workers must **write incremental progress into `results/worker-N.md`** even before done-final — a worker that has already written a header + first finding to the result file gives the manager usable output even if the final touch is never reached
