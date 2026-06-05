@@ -495,6 +495,52 @@ EOF
 6. The Manager (you) polls `$SHARED/done/` every 60s. When all 4 are done, you read the results, write `$SHARED/summary.md`, and report the summary to the user right here in the chat.
 7. The user can `tmux attach -t <session>` to watch the workers live, but doesn't have to. The conversation here is the source of truth.
 
+### Watching the worker windows
+
+After `/blocks` spawns the session, a Terminal window pops open and attaches to it. You see N panes in a grid, one per worker. Here's how to navigate and monitor them.
+
+**Inside the opened terminal** (most common):
+
+| Action | Key |
+|--------|-----|
+| Move focus to next pane | `Ctrl-b` → `→` / `↓` / `←` / `↑` |
+| Click a pane with the mouse | (works with `set -g mouse on`) |
+| Zoom current pane to full window, press again to unzoom | `Ctrl-b` `z` |
+| Resize by dragging the pane border with the mouse | |
+| Detach (keep workers running, return to your shell) | `Ctrl-b` `d` |
+| Re-attach from your shell | `tmux attach -t blocks-mgr-XXXXX` |
+| List all blocks sessions | `tmux list-sessions \| grep blocks-` |
+| Kill a single session | `tmux kill-session -t blocks-mgr-XXXXX` |
+
+**Without attaching** (peek at output programmatically):
+
+```bash
+# Capture the last 30 lines of a specific worker's pane
+SESSION=blocks-mgr-XXXXX
+tmux capture-pane -t "$SESSION":1.1 -p -S -30
+# (1.1 = worker-1, 1.2 = worker-2, etc.)
+
+# Capture all workers at once
+for i in 1 2 3 4; do
+  echo "=== worker-$i ==="
+  tmux capture-pane -t "$SESSION":1.$i -p -S -10
+done
+
+# Watch a specific worker in real time (10s polling)
+watch -n 10 "tmux capture-pane -t $SESSION:1.1 -p -S -20"
+```
+
+**Send a follow-up message to one worker** (useful if a worker is stuck or asks a question):
+
+```bash
+SESSION=blocks-mgr-XXXXX
+tmux send-keys -t "$SESSION":1.2 "continue" Enter
+```
+
+The Manager (in your main chat) is also polling `$SHARED/done/` every ~60s and will see results. You don't need to monitor workers constantly — just check in if you're curious or if a worker looks stuck.
+
+**Tip:** `Ctrl-b `z` is the killer feature. Hit it on any pane to fullscreen that one worker's output, hit it again to return to the grid. Great for reading long error logs or big diffs.
+
 ### Auto-open a visible terminal (after spawn)
 
 The `/blocks` command (and the recipe if you call it directly) **automatically opens a new visible terminal window attached to the session** so you can see the workers immediately without copy-pasting a `tmux attach` command. Best-effort per platform:
