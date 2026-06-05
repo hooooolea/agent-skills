@@ -18,7 +18,7 @@ metadata:
 
 ### What's New
 
-- **v1.7.0** — Recipe restructured (single source of truth for session dimensions by N, decision table for `select-layout tiled`, no more duplicate "End-to-End Usage" prose). 4 hard bugs fixed: single-touch → two-touch worker protocol, ghost link to `macos-tmux-crash-recovery.md`, dead `DISABLE_BLOCKS_AUTOOPEN` anchor, duplicate `tmux-server-recovery.md` frontmatter entry.
+- **v1.7.0** — Recipe restructured (consolidated session dimensions by N into a single canonical table per mode — flat (200/200/240/320) and Manager (200/220/300/380), with the latter a +buffer variant for N-worker output; decision table for `select-layout tiled`; no more duplicate "End-to-End Usage" prose). 4 hard bugs fixed: single-touch → two-touch worker protocol, ghost link to `macos-tmux-crash-recovery.md`, dead `DISABLE_BLOCKS_AUTOOPEN` anchor, duplicate `tmux-server-recovery.md` frontmatter entry.
 - **v1.8.0** — Added **real `/blocks` slash command** (`hermes_cli/commands.py` + `cli.py` patches). Inside a Hermes session, `/blocks [N|2x2|--manager --workers N|list|kill|attach]` is now equivalent to saying "blocks ..." in natural language.
 - **v1.9.0** — Auto-open a visible terminal on macOS / Linux after spawn (writes `/tmp/blocks-attach-<session>.command` and `open`s it; opt out with `DISABLE_BLOCKS_AUTOOPEN=1`). `/blocks` handler now spawns the workers and pops a Terminal window for the user automatically.
 
@@ -73,7 +73,7 @@ For tmux quirks that bite you during blocks debugging (base-index shift, detache
 | 8 | 2×4 or 4×2 | grid |
 | > 8 | not recommended | panes get too small for prompt_toolkit |
 
-**Session dimensions by N** (single source of truth — used by every Recipe):
+**Session dimensions by N** (canonical for flat mode — Recipe: 2 Panes, Recipe: 6 Panes, Recipe: 8 Panes):
 
 | N | tmux `new-session -x W -y H` | Per-pane size (W/(N/2) × H/2) |
 |---|------------------------------|------------------------------|
@@ -83,6 +83,17 @@ For tmux quirks that bite you during blocks debugging (base-index shift, detache
 | 8 | `-x 320 -y 50` | 80×25 each (4 cols) |
 
 Height is always 50 (prompt_toolkit needs ~25 rows per pane; 2 rows × 25 = 50). Width grows with N so the smallest pane stays ≥80 cells wide.
+
+**Manager mode uses a wider buffer** (+20% for N=4, +25% for N=6/8) so the worker panes have more horizontal room for long diffs/tables. Used by [Recipe: Spawn N Workers in tmux](#recipe-spawn-n-workers-in-tmux-the-only-recipe-blocks---manager-needs):
+
+| N | tmux `new-session -x W -y H` | Worker pane size (W/(N/2) × H/2) |
+|---|------------------------------|------------------------------|
+| 2 | `-x 200 -y 50` | 100×25 each |
+| 4 | `-x 220 -y 50` | 110×25 each |
+| 6 | `-x 300 -y 50` | 100×25 each |
+| 8 | `-x 380 -y 50` | 95×25 each |
+
+Both policies satisfy "smallest pane stays ≥80 cells wide" (Manager mode ≥95, flat mode ≥80). Use flat (smaller) for casual multi-agent, Manager (larger) when the workers are expected to produce wide output.
 
 The "order of operations" is the single most important thing in this skill:
 
