@@ -990,7 +990,7 @@ tmux send-keys -t "$SESSION":1.2 'hermes -p reviewer -w' Enter
     This is safe for 2x2 / 2x3 / 2x4 pure grids. **Do NOT use this chain on a 1+N Manager+Workers structure** — `tiled` is destructive there (Pitfall 16). For 1+N, stick with explicit `resize-pane` only.
 
 21. **`#{session_width}` and `#{session_height}` return empty for a freshly-detached session** — `read W H <<< $(tmux list-panes -t "$SESSION" -F '#{session_width} #{session_height}' | head -1)` gives empty values, and any `resize-pane -x 0 -y 0` based on it is a no-op (pane collapses to 0).
-    **Fix:** always **hardcode** the same dimensions you passed to `tmux new-session -x W -y H`. Don't try to read them back from a detached session. For 2x2 with `-x 220 -y 50`, the target pane size is `110x25` (border cells eat ~1-2 from each).
+    **Fix:** always **hardcode** the same dimensions you passed to `tmux new-session -x W -y H`. Don't try to read them back from a detached session. For 2x2 with `-x 200 -y 50`, the target pane size is `100×25` (border cells eat ~1-2 from each).
 
 22. **Multi-round sessions need TWO touch files, not one** — the single `done/worker-N` touch protocol works for round 1 of a session, but round 2+ of the same `--manager` blocks session hits an ambiguity:
     - No `done/` file after N minutes → is the worker pane still alive and just slow, or did it die between rounds?
@@ -1038,55 +1038,9 @@ After running a `blocks N` command, confirm:
 - [ ] `prefix + d` detaches cleanly, `blocks attach <session>` reattaches
 - [ ] If profiles were requested, `hermes profile list` shows them
 
-## One-Shot Recipes
+## One-Shot Helpers
 
-**Quick 2x2 with custom task per pane:**
-```bash
-SESSION="blocks-2x2-$(date +%H%M%S)"
-tmux new-session -d -s "$SESSION" -x 200 -y 50
-tmux split-window -h -t "$SESSION":1
-tmux split-window -v -t "$SESSION":1.1
-tmux split-window -v -t "$SESSION":1.2
-
-# Force equal
-read W H <<< $(tmux list-panes -t "$SESSION" -F '#{session_width} #{session_height}' | head -1)
-for i in 1 2 3 4; do
-  tmux resize-pane -t "$SESSION":1.$i -x $((W/2)) -y $((H/2))
-done
-# NO select-layout tiled
-
-# Start hermes
-sleep 1
-tmux send-keys -t "$SESSION":1.1 'hermes -p coder' Enter
-tmux send-keys -t "$SESSION":1.2 'hermes -p researcher' Enter
-tmux send-keys -t "$SESSION":1.3 'hermes -p reviewer' Enter
-tmux send-keys -t "$SESSION":1.4 'hermes -p ops' Enter
-
-# Auto-load tasks after prompt_toolkit is up
-sleep 6
-tmux send-keys -t "$SESSION":1.1 'Refactor auth middleware to use FastAPI dependencies' Enter
-tmux send-keys -t "$SESSION":1.2 'Research: best Python lib for JWT in 2026' Enter
-tmux send-keys -t "$SESSION":1.3 'Review the PR #142 diff' Enter
-tmux send-keys -t "$SESSION":1.4 'Check server CPU/mem every 30s and report' Enter
-tmux attach -t "$SESSION"
-```
-
-**Side-by-side: code left, logs right:**
-```bash
-SESSION="blocks-codelogs-$(date +%H%M%S)"
-tmux new-session -d -s "$SESSION" -x 200 -y 50
-tmux split-window -h -t "$SESSION":1
-
-read W H <<< $(tmux list-panes -t "$SESSION" -F '#{session_width} #{session_height}' | head -1)
-for i in 1 2; do
-  tmux resize-pane -t "$SESSION":1.$i -x $((W/2)) -y $H
-done
-
-sleep 1
-tmux send-keys -t "$SESSION":1.1 'hermes -p coder' Enter
-tmux send-keys -t "$SESSION":1.2 'tail -f ~/server.log' Enter
-sleep 6 && tmux attach -t "$SESSION"
-```
+The two Recipes above ([2x2 Default](#recipe-2x2-default-the-canonical-pattern) and [2 Panes](#recipe-2-panes-leftright-or-topbottom)) are the working templates — copy them, swap profile names or paths. The snippets below are quick utilities, not alternative Recipes.
 
 **Reattach to a previous blocks session:**
 ```bash
