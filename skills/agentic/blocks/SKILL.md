@@ -454,8 +454,6 @@ poll for results, and report back here.
 EOF
 ```
 
-> **Implementation note:** the 2x3 and 2x4 cases above are stubs — the column-extension logic for N>4 is incomplete in this draft. For 2x3, after building 2x2, you need to split-h on the rightmost pane in EACH row to add a third column. For 2x4, repeat. The general pattern is: build a 2x2 first, then for each extra column, split-h on the rightmost pane of each row. Pane indices will shift each time, so the cleanest approach is to use `tmux list-panes` to find the rightmost pane dynamically, OR use `-t :1` (the active pane) after a `select-pane` to the rightmost pane.
-
 ### End-to-End Usage
 
 End-to-End Usage is covered by the [Invocation Flow](#invocation-flow-read-this-first-if-you-are-the-manager) section above (the table that shows USER trigger → HERMES action for each step of the manager→worker round). No separate walkthrough here.
