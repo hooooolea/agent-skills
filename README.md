@@ -4,7 +4,7 @@ English | [中文](README_zh.md)
 
 # Agent Skills
 
-_A curated collection of Hermes Agent SKILL.md files — drop-in skills for parallel-agent orchestration, blog writing, multi-agent MVPs, Spring Boot testing, and more._
+_A curated collection of Hermes Agent SKILL.md files — drop-in skills for parallel-agent orchestration, session checkpoints, blog writing, multi-agent MVPs, Spring Boot testing, and more._
 
 ![Built for Hermes · MIT licensed](https://img.shields.io/badge/Hermes-Agent-blue)
 
@@ -14,12 +14,12 @@ _A curated collection of Hermes Agent SKILL.md files — drop-in skills for para
 
 ## What's Here
 
-Each skill is a single `SKILL.md` file you can drop into `~/.hermes/skills/<name>/` (or your agent's equivalent) and use immediately. No npm install, no Python venv, no API keys — just markdown that teaches your agent when to use the skill and how to do it well.
+Each skill lives in `skills/<category>/<skill-name>/` as a single `SKILL.md` file. Drop it into `~/.hermes/skills/<name>/` (or your agent's equivalent) and use it immediately. No npm install, no Python venv, no API keys — just markdown that teaches your agent when to use the skill and how to do it well.
 
 | Skill | Category | One-liner |
 |-------|----------|-----------|
-| **[session-summary](./SKILL.md)** | productivity | Checkpoint any agent session into a `.session_summary.md`; next session resumes instantly |
 | **[blocks](./skills/agentic/blocks/SKILL.md)** | agentic | Spawn N parallel Hermes agents in tmux panes — flat (independent) or manager (coordinated) |
+| **[session-summary](./skills/productivity/session-summary/SKILL.md)** | productivity | Checkpoint any agent session into a `.session_summary.md`; next session resumes instantly |
 | **[multi-agent-mvp-startup](./skills/agentic/multi-agent-mvp-startup/SKILL.md)** | agentic | Bootstrap a multi-agent MVP project (backend + frontend) |
 | **[ejuerz-blog-writing](./skills/productivity/ejuerz-blog-writing/SKILL.md)** | productivity | Write and publish English AI-tooling blog posts for ejuerz.com (Astro 6 + AdSense) |
 | **[dev-task](./skills/productivity/dev-task/SKILL.md)** | productivity | 5-phase multi-subagent dev workflow (decompose → explore → code → review → ship) |
@@ -55,38 +55,6 @@ Supports both modes:
 
 ---
 
-## Featured: session-summary
-
-Your AI agent gets dumber the longer a session runs. It forgets early details, repeats itself, drifts off track. Starting fresh means re-explaining everything.
-
-**Session Summary** fixes this. One file. One habit. Zero lost context.
-
-```bash
-# End of session — checkpoint
-"Summarize the session and write .session_summary.md"
-
-# Next session — resume instantly
-"Read .session_summary.md and resume from where we left off"
-```
-
-### What Gets Saved
-
-| Section | What It Tracks |
-|---------|---------------|
-| Project Overview | What you're building, tech stack, key context |
-| Completed Actions | What was done, exact file paths, results |
-| Current State | Where work stopped, active blockers |
-| Next Steps | Priority-ordered todo for the next session |
-| Known Issues | Gotchas discovered and workarounds found |
-
-Every entry is specific — file paths, line numbers, commands that worked. No vague "we worked on the thing."
-
-![Blog write-up on ejuerz.com](assets/blog-preview.png)
-
-[→ Full docs in `./SKILL.md`](./SKILL.md)
-
----
-
 ## Install
 
 **One file per skill.** Pick the one you want, copy its `SKILL.md` into your agent's skills directory:
@@ -111,13 +79,28 @@ Restart your agent session and the skill is active. Trigger it by saying any of 
 - **Reusable** — same skill works across Hermes, Claude Code, Cursor, OpenClaw, anything that loads SKILL.md.
 - **Versioned with the prompt** — when you change your agent's system prompt, you re-read the same skill; no sync drift.
 
+## Skill folder format (hard rule)
+
+```
+skills/<category>/<skill-name>/
+├── SKILL.md          # required — the skill itself
+├── assets/           # optional — images, demo files
+├── references/       # optional — external links, deep-dive docs
+└── README.md         # optional — per-skill GitHub overview
+```
+
+- **All skills go in `skills/<category>/<skill-name>/`** — no SKILL.md at the repo root, no flat `skills/<name>/`.
+- **Categories are general-purpose buckets** — `agentic/`, `productivity/`, `development/`, `data-viz/`, `testing/`, etc. Add a new one only when none of the existing buckets fit.
+- **One skill per folder** — a folder is the atomic unit. Don't pack two skills into one folder even if they're closely related.
+
 ## Contributing
 
 Add a new skill:
-1. Create a folder: `skills/<category>/<your-skill-name>/`
-2. Add a `SKILL.md` with the required frontmatter (`name`, `description` ≤ 1024 chars, version, author)
-3. Add a row to the index table in this README
-4. Open a PR
+1. Pick a category (or add a new one in this README)
+2. Create the folder: `skills/<category>/<your-skill-name>/`
+3. Add a `SKILL.md` with the required frontmatter (`name`, `description` ≤ 1024 chars, `version`, `author`)
+4. Add a row to the index table in this README
+5. Open a PR
 
 See any existing `SKILL.md` for the format and tone.
 
