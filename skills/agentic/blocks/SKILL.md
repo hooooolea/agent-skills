@@ -2,7 +2,7 @@
 layout: default
 name: blocks
 description: "Use when the user says 'blocks', '分块', '分屏', '2x2', '2*2', '四宫格', '分配N个员工', '起N个worker', 'manager+workers', or types the `/blocks` slash command in a Hermes session. Spawns N Hermes agents in parallel inside a fresh tmux window. Two modes: (1) **flat** — N tmux panes each running an isolated Hermes (N must be even 2/4/6/8, default 2x2); (2) **manager** — the current Hermes chat becomes the Manager (no extra tmux pane), N worker panes spawn in a 2-row × (N/2)-col grid and coordinate via files at ~/blocks-shared/<session>/{tasks,results,done,summary}.md. Both modes equalise pane sizes BEFORE starting Hermes (split shells → resize-pane to even halves → start agents). **Also provides a real hermes slash command** (`/blocks [N|--manager --workers N|list|kill|attach]`) added to `hermes_cli/commands.py` + `cli.py`; inside a Hermes session, `/blocks` and natural-language triggers are equivalent."
-version: 1.9.0
+version: 1.10.0
 author: Hermes Agent
 license: MIT
 platforms: [macos, linux]
