@@ -484,7 +484,7 @@ EOF
 
 End-to-End Usage is covered by the [Invocation Flow](#invocation-flow-read-this-first-if-you-are-the-manager) section above (the table that shows USER trigger → HERMES action for each step of the manager→worker round). No separate walkthrough here.
 
-### Auto-open a visible terminal (after spawn)
+### Inside the opened terminal (keys & capture)
 
 After `/blocks` spawns the session, a Terminal window pops open and attaches to it. You see N panes in a grid, one per worker. Here's how to navigate and monitor them.
 
@@ -498,8 +498,10 @@ After `/blocks` spawns the session, a Terminal window pops open and attaches to 
 | Resize by dragging the pane border with the mouse | |
 | Detach (keep workers running, return to your shell) | `Ctrl-b` `d` |
 | Re-attach from your shell | `tmux attach -t blocks-mgr-XXXXX` |
-| List all blocks sessions | `tmux list-sessions \| grep blocks-` |
+| List all blocks sessions | `tmux list-sessions \\| grep blocks-` |
 | Kill a single session | `tmux kill-session -t blocks-mgr-XXXXX` |
+
+**Detach without killing workers:** `Ctrl-b` then `d` inside the opened terminal. The workers keep running in the background. Re-attach any time with `/blocks attach` or `tmux attach -t <session>`.
 
 **Without attaching** (peek at output programmatically):
 
@@ -530,7 +532,7 @@ The Manager (in your main chat) is also polling `$SHARED/done/` every ~60s and w
 
 **Tip:** `Ctrl-b `z` is the killer feature. Hit it on any pane to fullscreen that one worker's output, hit it again to return to the grid. Great for reading long error logs or big diffs.
 
-### Auto-open a visible terminal (after spawn)
+### Auto-open: how it works
 
 The `/blocks` command (and the recipe if you call it directly) **automatically opens a new visible terminal window attached to the session** so you can see the workers immediately without copy-pasting a `tmux attach` command. Best-effort per platform:
 
@@ -542,12 +544,14 @@ The `/blocks` command (and the recipe if you call it directly) **automatically o
 
 The .command file on macOS is also double-clickable from Finder later if you want to re-attach.
 
-**Detach without killing workers:** `Ctrl-b` then `d` inside the opened terminal. The workers keep running in the background. Re-attach any time with `/blocks attach` or `tmux attach -t <session>`.
+### Disable auto-open
 
-**Disable auto-open** (if you prefer to attach manually): set the env var `DISABLE_BLOCKS_AUTOOPEN=1` before running `/blocks --manager`:
+If you prefer to attach manually (e.g. you're SSHed into the box and don't have a local terminal to pop open), set the env var `DISABLE_BLOCKS_AUTOOPEN=1` before running `/blocks --manager`:
+
 ```bash
 DISABLE_BLOCKS_AUTOOPEN=1 /blocks --manager
 ```
+
 The handler checks for this exact env var name at startup; if set, it skips writing the .command file and printing the attach instructions, and workers keep running headless.
 
 ### Recovery from tmux server death (file-based salvage)
