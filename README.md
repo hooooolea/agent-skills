@@ -54,8 +54,6 @@ Supports both modes:
 
 ## Install
 
-**One file per skill.** Pick the one you want, copy its `SKILL.md` into your agent's skills directory:
-
 ```bash
 # Hermes Agent
 cp skills/agentic/blocks/SKILL.md ~/.hermes/skills/blocks/SKILL.md
@@ -68,45 +66,6 @@ cp -r skills/* ~/.hermes/skills/
 ```
 
 Restart your agent session and the skill is active. Trigger it by saying any of the keywords in its `description:` field.
-
-## Why a single-file skill format
-
-- **Diff-friendly** — skills are markdown, not code. PRs read like documentation.
-- **No dependencies** — your agent reads markdown, doesn't `pip install`.
-- **Reusable** — same skill works across Hermes, Claude Code, Cursor, OpenClaw, anything that loads SKILL.md.
-- **Versioned with the prompt** — when you change your agent's system prompt, you re-read the same skill; no sync drift.
-
-## Skill folder format (hard rule)
-
-```
-skills/<category>/<skill-name>/
-├── SKILL.md          # required — the skill itself
-├── assets/           # optional — images, demo files
-├── references/       # optional — external links, deep-dive docs
-└── README.md         # optional — per-skill GitHub overview
-```
-
-- **All skills go in `skills/<category>/<skill-name>/`** — no SKILL.md at the repo root, no flat `skills/<name>/`.
-- **Categories are general-purpose buckets** — `agentic/`, `productivity/`, `development/`, `data-viz/`, `testing/`, etc. Add a new one only when none of the existing buckets fit.
-- **One skill per folder** — a folder is the atomic unit. Don't pack two skills into one folder even if they're closely related.
-
-## Contributing
-
-Add a new skill:
-1. Pick a category (or add a new one in this README)
-2. Create the folder: `skills/<category>/<your-skill-name>/`
-3. Add a `SKILL.md` with the required frontmatter (`name`, `description` ≤ 1024 chars, `version`, `author`)
-4. Add a row to the index table in this README
-5. Open a PR
-
-See any existing `SKILL.md` for the format and tone.
-
-## Categories
-
-- `agentic/` — AI agent orchestration, multi-agent workflows
-- `productivity/` — writing, dev workflow, session management
-
-Add a new category by creating a folder and documenting it in the README.
 
 ---
 
