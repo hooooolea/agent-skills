@@ -57,7 +57,7 @@ Default is 2x2 (four panes, tiled) with `coder` / `researcher` / `reviewer` / `o
 
 For the full N-variable, profile-customisable Recipe (with role prompts, sleep waits, error handling), see [Recipe: 2x2 Default](#recipe-2x2-default-the-canonical-pattern) below.
 
-For **Manager mode** the Recipe is at [Recipe: Spawn N Workers in tmux](#recipe-spawn-n-workers-in-tmux-the-only-recipe-blocks---manager-needs) — but the easier path is to just **say** "分配 4 个员工" or "blocks --manager" in your Hermes chat and let this skill handle the rest (see [Invocation Flow](#invocation-flow) below).
+For **Manager mode** the Recipe is at [Recipe: Spawn N Workers in tmux](#recipe-spawn-n-workers-in-tmux-the-only-recipe-blocks---manager-needs) — but the easier path is to just **say** "分配 4 个员工" or "blocks --manager" in your Hermes chat and let this skill handle the rest (see Invocation Flow below).
 
 For tmux quirks that bite you during blocks debugging (base-index shift, detached size, mouse config, etc.) see the [tmux Split Direction Reference](#tmux-split-direction-reference) and [Common Pitfalls](#common-pitfalls) sections below.
 
