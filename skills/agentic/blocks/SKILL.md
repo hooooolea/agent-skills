@@ -143,7 +143,7 @@ As of v1.8.0, this skill provides a **real hermes slash command** in addition to
 - Commit the patch to a fork of `hermes-agent` and reinstall from that fork.
 - Save the diff: `cd ~/.hermes/hermes-agent && git diff cli.py hermes_cli/commands.py > ~/.hermes/patches/blocks-slash-command.patch`, then re-apply after update with `git apply`.
 
-**Why natural-language triggers are still valuable** even with the slash command: the slash command only works *inside* a Hermes session. If the user wants to spawn blocks from a plain terminal (not in a chat), the natural-language path doesn't help either — they need to run the bash from the `Recipe: 2x2 Default` section, or `bash ~/.hermes/skills/blocks/scripts/blocks.sh` if a script is available.
+**Why natural-language triggers are still valuable** — the slash command only works *inside* a Hermes session; users running blocks from a plain terminal need the Recipes above.
 
 ## Syntax
 
