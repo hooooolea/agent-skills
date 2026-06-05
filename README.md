@@ -2,8 +2,6 @@ English | [中文](README_zh.md)
 
 # Agent Skills
 
-三个 Hermes Agent 的 skill。每个就是一个 SKILL.md。
-
 ## Skills
 
 - **blocks** — [SKILL.md](skills/agentic/blocks/SKILL.md) — 一个 tmux 窗口跑 N 个并行 Hermes
