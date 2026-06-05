@@ -47,28 +47,6 @@ Default is 2x2 (four panes, tiled) with `coder` / `researcher` / `reviewer` / `o
 
 ## Quick Start
 
-The full recipes below are ~50 lines of bash each. Pick the one you need, run it from your terminal or have your Hermes session run it via its terminal tool.
-
-```bash
-# Flat 2x2 — paste this into a terminal, OR have your Hermes run it via terminal tool
-bash -c "$(cat <<'BASH'
-SESSION="blocks-2x2-$(date +%H%M%S)"
-tmux new-session -d -s "$SESSION" -x 200 -y 50
-tmux split-window -h -t "$SESSION":1
-tmux split-window -v -t "$SESSION":1.1
-tmux split-window -v -t "$SESSION":1.2
-for i in 1 2 3 4; do
-  tmux resize-pane -t "$SESSION":1.$i -x 100 -y 25
-done
-for i in 1 2 3 4; do
-  tmux select-pane -t "$SESSION":1.$i -T "pane-$i"
-  tmux send-keys -t "$SESSION":1.$i 'hermes' Enter
-done
-sleep 6 && tmux attach -t "$SESSION"
-BASH
-)"
-```
-
 For the full N-variable, profile-customisable Recipe (with role prompts, sleep waits, error handling), see [Recipe: 2x2 Default](#recipe-2x2-default-the-canonical-pattern) below.
 
 For **Manager mode** the Recipe is at [Recipe: Spawn N Workers in tmux](#recipe-spawn-n-workers-in-tmux-the-only-recipe-blocks---manager-needs) — but the easier path is to just **say** "分配 4 个员工" or "blocks --manager" in your Hermes chat and let this skill handle the rest (see [Invocation Flow](#invocation-flow) below).
@@ -86,6 +64,17 @@ For tmux quirks that bite you during blocks debugging (base-index shift, detache
 | 6 | 2×3 or 3×2 | grid |
 | 8 | 2×4 or 4×2 | grid |
 | > 8 | not recommended | panes get too small for prompt_toolkit |
+
+**Session dimensions by N** (single source of truth — used by every Recipe):
+
+| N | tmux `new-session -x W -y H` | Per-pane size (W/(N/2) × H/2) |
+|---|------------------------------|------------------------------|
+| 2 | `-x 200 -y 50` | 100×25 each |
+| 4 | `-x 200 -y 50` | 100×25 each (2 cols) |
+| 6 | `-x 240 -y 50` | 80×25 each (3 cols) |
+| 8 | `-x 320 -y 50` | 80×25 each (4 cols) |
+
+Height is always 50 (prompt_toolkit needs ~25 rows per pane; 2 rows × 25 = 50). Width grows with N so the smallest pane stays ≥80 cells wide.
 
 The "order of operations" is the single most important thing in this skill:
 
@@ -175,10 +164,7 @@ The user invokes it conversationally. Parse the intent and call the matching rec
 | `blocks 6` / `6 个` | 2x3 grid, tiled |
 | `blocks 4 coder designer writer pm` | 2x2 with custom profile names |
 | `blocks 3x2` | 3 cols × 2 rows (6 panes) |
-| `blocks list` | show all `blocks-*` tmux sessions |
-| `blocks attach` / `blocks attach blocks-2x2` | tmux attach to a blocks session |
-| `blocks kill` / `blocks stop` / `blocks 收工` | kill all `blocks-*` sessions |
-| `blocks kill coder` | kill only the coder pane in current window |
+| `blocks list` / `kill` / `attach` | lifecycle — see [Recipe: List / Attach / Kill](#recipe-list--attach--kill) |
 | `blocks --manager` / `blocks --manager --workers 4` / `分配 4 个员工` | Activate Manager mode + spawn 4 worker panes in 2x2 grid |
 | `blocks --manager --workers 6` / `分配 6 个员工` | Activate Manager mode + spawn 6 worker panes in 3x2 grid |
 | `blocks --manager --workers 2` / `分配 2 个员工` | Activate Manager mode + spawn 2 worker panes in 1x2 grid |
@@ -187,9 +173,7 @@ The user invokes it conversationally. Parse the intent and call the matching rec
 | `/blocks 2` / `/blocks 6` / `/blocks 2x2` (slash command) | N flat panes — equivalent to `blocks N` or `blocks 2x2` |
 | `/blocks --manager` (slash command) | Activate Manager mode with 4 workers |
 | `/blocks --manager --workers 6` (slash command) | Activate Manager mode with 6 workers |
-| `/blocks list` (slash command) | List all `blocks-*` tmux sessions |
-| `/blocks kill` (slash command) | Kill all `blocks-*` tmux sessions |
-| `/blocks attach` (slash command) | Reattach to the most recent blocks session (replaces the calling shell via `os.execvp`) |
+| `/blocks list` (slash command) | List all `blocks-*` tmux sessions (handler also exposes `blocks attach`, `blocks kill` — see [Slash Command section](#slash-command-blocks-inside-a-hermes-session)) |
 
 **Odd N (3, 5, 7):** round up to the next even number and tell the user. `blocks 3` → silently becomes `blocks 4` and warn. `blocks 5` → `blocks 6`, etc.
 
@@ -733,7 +717,17 @@ Most editors call these the opposite (`:vsplit` makes a vertical line = left/rig
 
 **Build a 1+N layout** (1 large + N small stacked) by:
 1. `split-window -h on 1.1` → 1.1 (left 50%) | 1.2 (right 50%, full height)
-2. `split-window -v on 1.2` (N-1 more times, each on the latest right-half pane) → 1.2, 1.3, ... 1.(N+1) stacked
+2. `split-window -v` (N-1 more times, each on the latest right-half pane) → 1.2, 1.3, ... 1.(N+1) stacked
+
+**Decision table: when to use `select-layout tiled` (and when not to)**
+
+| Layout | `select-layout tiled`? | Why |
+|--------|------------------------|-----|
+| Pure N×M grid (2x2, 2x3, 2x4) | Tolerable, but unnecessary | resize-pane gives exact sizes; tiled is fine if you don't need pixel precision |
+| 1+N (Manager + Workers) | **NO — destructive** | tiled re-computes the layout and stretches the N small panes into a single column taking the full row |
+| After any manual resize-pane | **NO** | tiled overwrites your explicit sizes |
+
+**Rule of thumb:** if you explicitly called `resize-pane` to set pane sizes, don't follow it with `select-layout tiled`. For the canonical split+resize sequence used in the Recipes above, `tiled` is omitted entirely.
 
 **Critical: do NOT call `select-layout tiled` after building a 1+N layout.** It will re-compute the layout and often stretch the N small panes into a single column that takes the full row. For grid layouts (2x2, 3x3) tiled is harmless, but for 1+N it's destructive. Use only `resize-pane` to enforce exact sizes.
 
@@ -960,9 +954,7 @@ tmux send-keys -t "$SESSION":1.2 'hermes -p reviewer -w' Enter
 
 16. **`select-layout tiled` is destructive on 1+N layouts** — when you have 1 large pane (Manager) + N small panes (Workers), calling `select-layout tiled` afterwards will RE-COMPUTE the layout using tmux's tiled algorithm. With 3 total panes, tiled often produces "1 large left + 1 column-right that takes the full row" — completely losing the N-pane stack. Pure grid layouts (2x2, 3x3) are tolerant of tiled, but for Manager+Workers structures, ALWAYS use only `resize-pane` to enforce sizes and skip `select-layout tiled` entirely. See `references/tmux-pane-gotchas.md` § 2 for the full diagnostic.
 
-17. **tmux split flags are OPPOSITE of vim** — `tmux split-window -h` does a **left/right** split (new pane to the right of target). `tmux split-window -v` does a **top/bottom** split (new pane below target). The names refer to the **line orientation**, not the split direction. This is opposite of vim's `:split` (top/bottom) and `:vsplit` (left/right). Easy way to remember: `Ctrl-b + "` (double-quote key, "horizontal line" icon) is `-h` = horizontal line = L/R split. `Ctrl-b + %` (percent key, "vertical line" icon) is `-v` = vertical line = T/B split. All Recipes in this skill assume this convention. See `references/tmux-pane-gotchas.md` § 1.
-
-18. **`hermes chat` has no `--system-note` flag** — earlier drafts of this skill assumed a flag like `hermes --system-note '...'` could inject a role prompt at startup. It doesn't exist. The verified working pattern is: send `hermes` to the pane, wait 6s for prompt_toolkit to render, then send the role text as the first user message via `tmux send-keys -t "$SESSION":1.$i "You are ..." Enter`. The role then becomes the first entry in the conversation history, which the agent sees and obeys.
+17. **`hermes chat` has no `--system-note` flag** — earlier drafts of this skill assumed a flag like `hermes --system-note '...'` could inject a role prompt at startup. It doesn't exist. The verified working pattern is: send `hermes` to the pane, wait 6s for prompt_toolkit to render, then send the role text as the first user message via `tmux send-keys -t "$SESSION":1.$i "You are ..." Enter`. The role then becomes the first entry in the conversation history, which the agent sees and obeys.
 
 19. **macOS tmux server crashes or gets reaped after ~10 minutes of detached running** — On macOS Sonoma/Sequoia, a `tmux new-session -d` session that holds 4 hermes workers (each compiling/running tests, doing heavy shell work) can crash the entire tmux server around the 10-11 minute mark. Symptoms: `tmux list-sessions` returns `no server running on /private/tmp/tmux-501/default`, all worker hermes subprocesses vanish, pane capture returns blank. `tmux capture-pane` and `tmux send-keys` both fail with "no server". The good news: file changes workers made have already been written to disk and survive the crash — only the panes are lost. See `references/tmux-server-recovery.md` for the full diagnosis and protocol. **Mitigations baked into the skill**:
     - Cap single-round task time at **6 minutes** (hard upper bound 7) — not the 10-min default
