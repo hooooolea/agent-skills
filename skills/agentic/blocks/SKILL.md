@@ -877,6 +877,19 @@ tmux send-keys -t "$SESSION":1.2 'hermes -p ops' Enter
 sleep 6 && tmux attach -t "$SESSION"
 ```
 
+**Variation: 1 hermes pane + 1 long-running shell** (e.g. code left, logs right). Same as `Left/right` above but swap the second pane's `hermes` for a long-running command:
+
+```bash
+SESSION="blocks-codelogs-$(date +%H%M%S)"
+tmux new-session -d -s "$SESSION" -x 200 -y 50
+tmux split-window -h -t "$SESSION":1
+# (resize loop as above)
+sleep 1
+tmux send-keys -t "$SESSION":1.1 'hermes -p coder' Enter
+tmux send-keys -t "$SESSION":1.2 'tail -f ~/server.log' Enter
+sleep 6 && tmux attach -t "$SESSION"
+```
+
 ## Recipe: List / Attach / Kill
 
 ```bash
