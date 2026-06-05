@@ -6,9 +6,9 @@ English | [中文](README_zh.md)
 
 ## Skills
 
-- **blocks** — 一个 tmux 窗口跑 N 个并行 Hermes。spawn 后会自动弹一个 Terminal.app attach 上去，鼠标点 / `Ctrl-b` 方向键 切 worker pane 实时看每个 worker 干活。detach 按 `Ctrl-b d`，workers 后台继续。
-- **session-summary** — session 结束前存个档，下次接着干
-- **dev-task** — 多子代理开发流
+- **blocks** — [SKILL.md](skills/agentic/blocks/SKILL.md) — 一个 tmux 窗口跑 N 个并行 Hermes
+- **session-summary** — [SKILL.md](skills/productivity/session-summary/SKILL.md) — session 结束前存个档，下次接着干
+- **dev-task** — [SKILL.md](skills/productivity/dev-task/SKILL.md) — 多子代理开发流
 
 ## 安装
 
@@ -19,6 +19,8 @@ English | [中文](README_zh.md)
 ```bash
 cp -r skills/* ~/.hermes/skills/
 ```
+
+blocks 跑起来后进 tmux 窗口，按 `Ctrl-b` 然后 `?` 列出所有快捷键。
 
 ---
 
