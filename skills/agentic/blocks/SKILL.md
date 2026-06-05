@@ -490,15 +490,9 @@ EOF
 
 ### End-to-End Usage
 
-1. You're in the main Hermes chat. You say: "blocks --manager --workers 4" (or "分配 4 个员工", or "起 4 个 worker").
-2. The current Hermes (you) executes the blocks recipe, which spawns 4 tmux panes (workers) in a new session, injects their roles, and prints the activation message.
-3. You reply with a task: "把 HyperGraphRAG 跑通并对比 baseline".
-4. The current Hermes (now in Manager mode) saves your task to `$SHARED/task.md`, breaks it into 4 sub-tasks, writes them to `$SHARED/tasks/worker-*.md`, and tells you the plan in the chat.
-5. The 4 workers pick up their tasks, do the work, write results to `$SHARED/results/worker-*.md`, and `touch` `$SHARED/done/worker-*`.
-6. The Manager (you) polls `$SHARED/done/` every 60s. When all 4 are done, you read the results, write `$SHARED/summary.md`, and report the summary to the user right here in the chat.
-7. The user can `tmux attach -t <session>` to watch the workers live, but doesn't have to. The conversation here is the source of truth.
+End-to-End Usage is covered by the [Invocation Flow](#invocation-flow-read-this-first-if-you-are-the-manager) section above (the table that shows USER trigger → HERMES action for each step of the manager→worker round). No separate walkthrough here.
 
-### Watching the worker windows
+### Auto-open a visible terminal (after spawn)
 
 After `/blocks` spawns the session, a Terminal window pops open and attaches to it. You see N panes in a grid, one per worker. Here's how to navigate and monitor them.
 
@@ -970,17 +964,12 @@ tmux send-keys -t "$SESSION":1.2 'hermes -p reviewer -w' Enter
 
 18. **`hermes chat` has no `--system-note` flag** — earlier drafts of this skill assumed a flag like `hermes --system-note '...'` could inject a role prompt at startup. It doesn't exist. The verified working pattern is: send `hermes` to the pane, wait 6s for prompt_toolkit to render, then send the role text as the first user message via `tmux send-keys -t "$SESSION":1.$i "You are ..." Enter`. The role then becomes the first entry in the conversation history, which the agent sees and obeys.
 
-19. **macOS tmux server crashes after ~10 minutes of detached running** — On macOS Sonoma/Sequoia, a `tmux new-session -d` session that holds 4 hermes workers (each compiling/running tests, doing heavy shell work) can crash the entire tmux server around the 10-11 minute mark. Symptoms: `tmux list-sessions` returns `no server running on /private/tmp/tmux-501/default`, all worker hermes subprocesses vanish, pane capture returns blank. **This is NOT recoverable** — the workers and their in-memory state are gone. See `references/tmux-server-recovery.md` for the full diagnosis and protocol. **Mitigations baked into the skill**:
-    - Cap single-round task time at **5-6 minutes** (not the 10-min default the recipe used to suggest)
+19. **macOS tmux server crashes or gets reaped after ~10 minutes of detached running** — On macOS Sonoma/Sequoia, a `tmux new-session -d` session that holds 4 hermes workers (each compiling/running tests, doing heavy shell work) can crash the entire tmux server around the 10-11 minute mark. Symptoms: `tmux list-sessions` returns `no server running on /private/tmp/tmux-501/default`, all worker hermes subprocesses vanish, pane capture returns blank. `tmux capture-pane` and `tmux send-keys` both fail with "no server". The good news: file changes workers made have already been written to disk and survive the crash — only the panes are lost. See `references/tmux-server-recovery.md` for the full diagnosis and protocol. **Mitigations baked into the skill**:
+    - Cap single-round task time at **6 minutes** (hard upper bound 7) — not the 10-min default
     - Workers must **`touch done-start` within 30s** of starting — that file is the only post-mortem signal that the worker received and began the task
     - Workers must **write incremental progress into `results/worker-N.md`** even before done-final — a worker that has already written a header + first finding to the result file gives the manager usable output even if the final touch is never reached
-    - If the manager needs more than 5-6 min of work per round, **split into multiple rounds** rather than extending the timeout
-
-19. **macOS can reap a fully-detached tmux server after 10+ minutes** — `tmux list-sessions` suddenly returns `no server running on /private/tmp/tmux-501/default` and all worker panes are gone. macOS launchd may treat the detached server as abandoned under memory pressure or after a sleep/wake cycle. Symptoms on the manager side: `tmux capture-pane` and `tmux send-keys` both fail with "no server". The good news: file changes workers made have already been written to disk and survive the crash — only the panes are lost.
-    **Fix:**
-    - Don't rely on a single 10+ minute round. Split the task into **5-7 minute rounds** with explicit `done/` signals between rounds. The Manager can poll between rounds, see who finished, and dispatch a follow-up round.
     - After spawning the session, attach to it (or open a `tmux attach` window). launchd is much less aggressive about reaping sessions with a live client.
-    - If a crash does happen, see Pitfall 20 + the **Recovery from tmux server death** subsection below.
+    - If the manager needs more than 6 min of work per round, **split into multiple rounds** rather than extending the timeout
 
 20. **Worker should `touch $SHARED/done/worker-N` BEFORE writing `results/worker-N.md`, not after** — if the worker writes the result first, then crashes (or the tmux server dies) before touching `done/`, the manager polls forever and times out, even though the result file actually exists. The atomic signal must precede the (slow) result write.
     **Fix:** in every task file's "completion protocol" section, write:
@@ -1019,7 +1008,7 @@ tmux send-keys -t "$SESSION":1.2 'hermes -p reviewer -w' Enter
 
     The `worker-N-start` file should be touched BEFORE any heavy work, and the task file should say "CRITICAL: first action MUST be ... touching .../done/worker-N-start within 30 seconds. This protects against tmux server crash — without that touch file the manager will assume you never started." The 30-second deadline also catches the case where the worker is stuck reading/parsing the task file.
 
-23. **`/blocks` slash command is gone after `hermes update`** — the patch that adds the CommandDef + handler lives in `~/.hermes/hermes-agent/{hermes_cli/commands.py,cli.py}`, which is the upstream working tree. `hermes update` overwrites it. Symptoms: `/blocks` returns "Unknown command: /blocks" in newer sessions.
+24. **`/blocks` slash command is gone after `hermes update`** — the patch that adds the CommandDef + handler lives in `~/.hermes/hermes-agent/{hermes_cli/commands.py,cli.py}`, which is the upstream working tree. `hermes update` overwrites it. Symptoms: `/blocks` returns "Unknown command: /blocks" in newer sessions.
     **Fix (before running update):**
     ```bash
     cd ~/.hermes/hermes-agent
