@@ -4,7 +4,7 @@ English | [中文](README_zh.md)
 
 # Agent Skills
 
-_A curated collection of Hermes Agent SKILL.md files — drop-in skills for parallel-agent orchestration, session checkpoints, blog writing, multi-agent MVPs, Spring Boot testing, and more._
+_A curated collection of Hermes Agent SKILL.md files — drop-in skills for parallel-agent orchestration, multi-subagent dev workflows, and session checkpoints._
 
 ![Built for Hermes · MIT licensed](https://img.shields.io/badge/Hermes-Agent-blue)
 
@@ -20,12 +20,9 @@ Each skill lives in `skills/<category>/<skill-name>/` as a single `SKILL.md` fil
 |-------|----------|-----------|
 | **[blocks](./skills/agentic/blocks/SKILL.md)** | agentic | Spawn N parallel Hermes agents in tmux panes — flat (independent) or manager (coordinated) |
 | **[session-summary](./skills/productivity/session-summary/SKILL.md)** | productivity | Checkpoint any agent session into a `.session_summary.md`; next session resumes instantly |
-| **[multi-agent-mvp-startup](./skills/agentic/multi-agent-mvp-startup/SKILL.md)** | agentic | Bootstrap a multi-agent MVP project (backend + frontend) |
-| **[ejuerz-blog-writing](./skills/productivity/ejuerz-blog-writing/SKILL.md)** | productivity | Write and publish English AI-tooling blog posts for ejuerz.com (Astro 6 + AdSense) |
 | **[dev-task](./skills/productivity/dev-task/SKILL.md)** | productivity | 5-phase multi-subagent dev workflow (decompose → explore → code → review → ship) |
-| **[spring-boot-mybatisplus-unit-test](./skills/development/spring-boot-mybatisplus-unit-test/SKILL.md)** | development | Spring Boot + MyBatis-Plus service-layer unit testing with Mockito |
 
-Browse by category: [`agentic/`](./skills/agentic/) · [`productivity/`](./skills/productivity/) · [`development/`](./skills/development/)
+Browse by category: [`agentic/`](./skills/agentic/) · [`productivity/`](./skills/productivity/)
 
 ---
 
@@ -108,7 +105,6 @@ See any existing `SKILL.md` for the format and tone.
 
 - `agentic/` — AI agent orchestration, multi-agent workflows
 - `productivity/` — writing, dev workflow, session management
-- `development/` — language- and framework-specific dev tools
 
 Add a new category by creating a folder and documenting it in the README.
 

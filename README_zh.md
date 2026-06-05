@@ -4,7 +4,7 @@
 
 # Agent Skills
 
-_Hermes Agent 的 SKILL.md 集合 — 直接用的并行 Agent 编排、session 存档、写博客、多 Agent MVP、Spring Boot 测试等 skill。_
+_Hermes Agent 的 SKILL.md 集合 — 直接用的并行 Agent 编排、多子代理开发流、session 存档。_
 
 ![Built for Hermes · MIT](https://img.shields.io/badge/Hermes-Agent-blue)
 
@@ -20,12 +20,9 @@ _Hermes Agent 的 SKILL.md 集合 — 直接用的并行 Agent 编排、session 
 |-------|------|--------|
 | **[blocks](./skills/agentic/blocks/SKILL.md)** | agentic | 一个 tmux 窗口起 N 个并行 Hermes agent — flat（独立）或 manager（协调） |
 | **[session-summary](./skills/productivity/session-summary/SKILL.md)** | productivity | 任何 session 结束前存档到 `.session_summary.md`；下次打开秒速续上 |
-| **[multi-agent-mvp-startup](./skills/agentic/multi-agent-mvp-startup/SKILL.md)** | agentic | 启动多 agent MVP 项目（后端 + 前端） |
-| **[ejuerz-blog-writing](./skills/productivity/ejuerz-blog-writing/SKILL.md)** | productivity | 写英文 AI 工具博客到 ejuerz.com（Astro 6 + AdSense） |
 | **[dev-task](./skills/productivity/dev-task/SKILL.md)** | productivity | 5 阶段多子代理开发流（拆 → 探 → 写 → 审 → 收） |
-| **[spring-boot-mybatisplus-unit-test](./skills/development/spring-boot-mybatisplus-unit-test/SKILL.md)** | development | Spring Boot + MyBatis-Plus service 层单测（Mockito） |
 
-按分类浏览：[`agentic/`](./skills/agentic/) · [`productivity/`](./skills/productivity/) · [`development/`](./skills/development/)
+按分类浏览：[`agentic/`](./skills/agentic/) · [`productivity/`](./skills/productivity/)
 
 ---
 
@@ -107,7 +104,6 @@ skills/<分类>/<skill 名>/
 
 - `agentic/` — AI agent 编排、多 agent 工作流
 - `productivity/` — 写东西、开发流、session 管理
-- `development/` — 特定语言/框架的开发工具
 
 新建分类就建文件夹 + 在 README 说明。
 
