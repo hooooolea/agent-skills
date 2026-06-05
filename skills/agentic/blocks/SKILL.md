@@ -22,34 +22,9 @@ metadata:
 - **v1.8.0** — Added **real `/blocks` slash command** (`hermes_cli/commands.py` + `cli.py` patches). Inside a Hermes session, `/blocks [N|2x2|--manager --workers N|list|kill|attach]` is now equivalent to saying "blocks ..." in natural language.
 - **v1.9.0** — Auto-open a visible terminal on macOS / Linux after spawn (writes `/tmp/blocks-attach-<session>.command` and `open`s it; opt out with `DISABLE_BLOCKS_AUTOOPEN=1`). `/blocks` handler now spawns the workers and pops a Terminal window for the user automatically.
 
-> **Bundled with this skill (v1.6 baseline, still true):**
->
-> **Scripts (runnable):**
-> - `scripts/blocks` — main CLI: `blocks 4`, `blocks 6 a b c d e f`, `blocks --manager`, `blocks list`, `blocks attach`, `blocks kill`
-> - `scripts/blocks.sh` — `.sh` re-export shim of `scripts/blocks` (alias for users who prefer the extension)
-> - `scripts/blocks-list.sh` — list active blocks sessions with pane sizes
-> - `scripts/blocks-attach.sh` — reattach to most recent (or named) blocks session
-> - `scripts/blocks-kill.sh` — kill all or named blocks sessions
-> - `scripts/recovery-scan.sh` — post-crash file-based recovery scan: lists what workers actually wrote after a tmux server crash
->
-> **Templates (copy & modify):**
-> - `templates/tmux.conf.blocks` — recommended `~/.tmux.conf` snippet (mouse on, base-index 1, orange borders, esc-time 0)
->
-> **References (read for depth):**
-> - `references/worker-execution-protocol.md` — **worker-side playbook**: 30-second start-touch rule, task→execute→final flow, DONE/PARTIAL/BLOCKED status taxonomy, pre-flight env checks, time-budget discipline, BLOCKED-result template
-> - `references/tmux-pane-gotchas.md` — 9 deep-dive tmux behaviours with diagnostics: split flag direction, tiled destructiveness, detached size, base-index shift, prompt_toolkit focus, send-keys Enter, mouse reload, attach blocking, kill cascades
-> - `references/troubleshooting.md` — symptom→fix index for common blocks problems (layout, mouse, hermes, manager mode, lifecycle, **tmux server crash recovery**)
-> - `references/worker-missing-task-protocol.md` — fallback for workers when the Manager never dispatched a task
-> - `references/tmux-server-recovery.md` — full procedure for salvaging a manager session after the tmux server dies mid-run (file-based recovery, marking workers PARTIAL/BLOCKED, deciding whether to restart)
-
 ## Overview
 
-One shell command, N parallel Hermes agents side-by-side. The skill wraps tmux split-window + send-keys to spin up an N-pane window where each pane runs an independent Hermes CLI process (optionally a different `-p` profile for full isolation of skills/memory/sessions).
-
-Why panes instead of separate `tmux new-session` calls:
-- All agents visible in one viewport — no tab hunting.
-- A single tmux prefix key lets you flip between agents.
-- Killing the window kills all of them at once.
+One shell command, N parallel Hermes agents side-by-side. The skill wraps tmux split-window + send-keys to spin up an N-pane window where each pane runs an independent Hermes CLI process (optionally a different `-p` profile for full isolation of skills/memory/sessions). All agents visible in one viewport — no tab hunting, single `prefix` key to flip, kill the window to clean up.
 
 Default is 2x2 (four panes, tiled) with `coder` / `researcher` / `reviewer` / `ops` profiles. Everything is overridable.
 
@@ -242,17 +217,7 @@ USER: "kill it"              →   `blocks kill` (or just tell user to
                                  run it themselves)
 ```
 
-**Triggers that activate Manager mode** (any of these in the user's message):
-
-- `blocks --manager` — default 4 workers
-- `blocks --manager --workers N` — N workers (N must be even, else round up)
-- `blocks --manager --workers 6` — explicit N
-- `分配 4 个员工` / `分配 6 个员工` / `分配 N 个员工` — Chinese
-- `起 4 个 worker` / `起 N 个 worker` / `起 4 个 hermes` — Chinese variant
-- `manager+workers` / `manager mode` / `4 panes with manager` — English variants
-- `我要 manager` / `manager 模式` / `拆给 4 个员工做` — semantic variants
-
-When you see any of these, **execute the Recipe in your terminal tool**. The Recipe's last output is the "Manager mode activated" banner. After printing the banner, **you ARE the Manager** — from this point on, every user message is a task for the Manager role.
+**Triggers that activate Manager mode** — already covered by the Syntax table above + the `description:` frontmatter triggers list. Execute the Recipe in your terminal tool when you see any of them. The Recipe's last output is the "Manager mode activated" banner; after printing it, you ARE the Manager.
 
 > **Chunking hint (read this first):** the default 10-minute per-worker timeout is the *upper bound*, not a target. On macOS, fully-detached tmux servers can be reaped by launchd after 10+ minutes — see Pitfall 18. Split work into **6-minute rounds** (hard upper bound 7 min) with explicit `done/` signalling, and either attach to the tmux session after spawning (so launchd treats it as user-attached) or be ready to recover from the filesystem if it dies. See `references/tmux-server-recovery.md`.
 
@@ -297,7 +262,7 @@ Workers form a 2-row × (N/2)-col grid in a fresh tmux window. N must be even (2
 └── summary.md                 # Manager aggregates here when all done
 ```
 
-**Why files, not tmux send-keys:** Manager is an LLM, not a deterministic controller. Telling it "use send-keys to dispatch tasks" makes the LLM responsible for tmux syntax, pane indexing, and race conditions. Files are simple, idempotent, inspectable, and survive Manager restarts. They also let the user inspect the system state at any time via `ls ~/blocks-shared/<session>/`.
+**Why files, not tmux send-keys:** Files are idempotent, inspectable, and survive Manager restarts — no tmux syntax for the LLM to get wrong.
 
 ### What Each Worker Knows (delivered as first message after hermes starts)
 
@@ -598,7 +563,7 @@ find <project-root> -newer "$START_MARKER" -type f \
 
 The `scripts/recovery-scan.sh` script automates steps 1-3 and prints a status table grouped by expected per-worker domain (the Manager must pass the project root and the per-worker expected paths/globs).
 
-**Why this works without relaunching tmux:** the protocol is deliberately file-based (see the "Why Files, not tmux send-keys" rationale earlier). When tmux dies, the in-memory pane state is gone, but `tasks/`, `results/`, `done/`, and the project's working tree are intact. A 30-second scan recovers ~90% of the work that would otherwise be lost. The remaining 10% is whatever the worker was about to write but hadn't yet fsynced.
+**Why this works without relaunching tmux:** the protocol is file-based. When tmux dies, the in-memory pane state is gone, but `tasks/`, `results/`, and `done/` survive on disk — a 30-second filesystem scan recovers the work.
 
 **Rule of thumb:** if any worker hit `>=70%` of the round's done-conditions, the salvage is worth using. Dispatch a new round (or hand control back to the user) with the partial work as the new starting point. If a worker is `<30%`, it was probably stuck on environment setup and a fresh round will be more productive than asking for "what they got so far".
 
@@ -622,12 +587,7 @@ The role prompt sent to each worker pane is intentionally short (4 lines). The *
 
 ### Why No Auto-Watch
 
-A `fswatch`/`inotifywait` watcher that pushes "worker-X done!" into the Manager (you) would save polling, but:
-- Adds an external dep (`fswatch` on macOS, `inotify-tools` on Linux)
-- The Manager still has to read the result file anyway, so polling is the same cost
-- LLM polling is robust: if a poll fails, the next one catches it
-
-If you want auto-watch later, add a `blocks --manager --watch` flag and a tiny fswatch wrapper that interrupts the Manager's normal tool loop with a "worker-X done!" message.
+Polling one file every 60s costs the same as an `fswatch`/`inotifywait` watcher and adds zero deps — LLM polling is robust because if a poll fails, the next one catches it.
 
 ### Kill a Manager Session
 
