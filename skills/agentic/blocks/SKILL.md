@@ -2,7 +2,6 @@
 layout: default
 name: blocks
 description: "Use when the user says 'blocks', '分块', '分屏', '2x2', '2*2', '四宫格', '分配N个员工', '起N个worker', 'manager+workers', or types the `/blocks` slash command in a Hermes session. Spawns N Hermes agents in parallel inside a fresh tmux window. Two modes: (1) **flat** — N tmux panes each running an isolated Hermes (N must be even 2/4/6/8, default 2x2); (2) **manager** — the current Hermes chat becomes the Manager (no extra tmux pane), N worker panes spawn in a 2-row × (N/2)-col grid and coordinate via files at ~/blocks-shared/<session>/{tasks,results,done,summary}.md. Both modes equalise pane sizes BEFORE starting Hermes (split shells → resize-pane to even halves → start agents). **Also provides a real hermes slash command** (`/blocks [N|--manager --workers N|list|kill|attach]`) added to `hermes_cli/commands.py` + `cli.py`; inside a Hermes session, `/blocks` and natural-language triggers are equivalent."
-version: 1.10.0
 author: Hermes Agent
 license: MIT
 platforms: [macos, linux]
@@ -13,14 +12,6 @@ metadata:
 ---
 
 # Blocks — Parallel Hermes in tmux Panes
-
-> **Verified working as of v1.6.0.** The core Recipe (spawn N panes + send role prompts + Manager mode with filesystem coordination) has been stable since v1.6.0 and is unchanged in subsequent minor versions.
-
-### What's New
-
-- **v1.7.0** — Recipe restructured (consolidated session dimensions by N into a single canonical table per mode — flat (200/200/240/320) and Manager (200/220/300/380), with the latter a +buffer variant for N-worker output; decision table for `select-layout tiled`; no more duplicate "End-to-End Usage" prose). 4 hard bugs fixed: single-touch → two-touch worker protocol, ghost link to `macos-tmux-crash-recovery.md`, dead `DISABLE_BLOCKS_AUTOOPEN` anchor, duplicate `tmux-server-recovery.md` frontmatter entry.
-- **v1.8.0** — Added **real `/blocks` slash command** (`hermes_cli/commands.py` + `cli.py` patches). Inside a Hermes session, `/blocks [N|2x2|--manager --workers N|list|kill|attach]` is now equivalent to saying "blocks ..." in natural language.
-- **v1.9.0** — Auto-open a visible terminal on macOS / Linux after spawn (writes `/tmp/blocks-attach-<session>.command` and `open`s it; opt out with `DISABLE_BLOCKS_AUTOOPEN=1`). `/blocks` handler now spawns the workers and pops a Terminal window for the user automatically.
 
 ## Overview
 
@@ -98,7 +89,7 @@ Don't use for:
 
 ## Slash Command (`/blocks` inside a Hermes session)
 
-As of v1.8.0, this skill provides a **real hermes slash command** in addition to natural-language triggers. Inside any Hermes session, typing `/blocks [args]` does the same thing as the corresponding natural-language phrase — but more reliably, because the slash command is registered in `hermes_cli/commands.py` and dispatched through `HermesCLI.process_command` like any built-in command.
+Inside any Hermes session, typing `/blocks [args]` does the same thing as the corresponding natural-language phrase — but more reliably, because the slash command is registered in `hermes_cli/commands.py` and dispatched through `HermesCLI.process_command` like any built-in command.
 
 **Verified working arguments (all tested with `expect` end-to-end):**
 
