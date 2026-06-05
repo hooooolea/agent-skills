@@ -1,3 +1,13 @@
 title: Agent Skills
 description: Three SKILL.md files for Hermes Agent
 theme: minima
+markdown: kramdown
+highlighter: rouge
+permalink: /:basename/
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+plugins:
+  - jekyll-relative-links

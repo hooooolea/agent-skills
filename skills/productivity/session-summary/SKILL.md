@@ -1,4 +1,5 @@
 ---
+layout: default
 name: session-summary-generator
 description: >
   Generate structured session summaries so you never lose project context.

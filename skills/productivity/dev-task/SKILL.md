@@ -1,4 +1,5 @@
 ---
+layout: default
 name: dev-task
 description: 5-phase 多子代理开发工作流（拆任务→探索→编码→审查→收尾）。三子代理上下文隔离，串联靠主代理手动复制粘贴。审核（Phase 3）是流程必备，跑在子代理里。
 version: 1.4.0

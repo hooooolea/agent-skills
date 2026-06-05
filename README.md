@@ -1,4 +1,5 @@
 English | [中文](README_zh.md)
+layout: default
 
 # Agent Skills
 
