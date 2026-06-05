@@ -14,7 +14,15 @@ metadata:
 
 # Blocks — Parallel Hermes in tmux Panes
 
-> **Bundled with this skill (verified working as of v1.6.0):**
+> **Verified working as of v1.6.0.** The core Recipe (spawn N panes + send role prompts + Manager mode with filesystem coordination) has been stable since v1.6.0 and is unchanged in subsequent minor versions.
+
+### What's New
+
+- **v1.7.0** — Recipe restructured (single source of truth for session dimensions by N, decision table for `select-layout tiled`, no more duplicate "End-to-End Usage" prose). 4 hard bugs fixed: single-touch → two-touch worker protocol, ghost link to `macos-tmux-crash-recovery.md`, dead `DISABLE_BLOCKS_AUTOOPEN` anchor, duplicate `tmux-server-recovery.md` frontmatter entry.
+- **v1.8.0** — Added **real `/blocks` slash command** (`hermes_cli/commands.py` + `cli.py` patches). Inside a Hermes session, `/blocks [N|2x2|--manager --workers N|list|kill|attach]` is now equivalent to saying "blocks ..." in natural language.
+- **v1.9.0** — Auto-open a visible terminal on macOS / Linux after spawn (writes `/tmp/blocks-attach-<session>.command` and `open`s it; opt out with `DISABLE_BLOCKS_AUTOOPEN=1`). `/blocks` handler now spawns the workers and pops a Terminal window for the user automatically.
+
+> **Bundled with this skill (v1.6 baseline, still true):**
 >
 > **Scripts (runnable):**
 > - `scripts/blocks` — main CLI: `blocks 4`, `blocks 6 a b c d e f`, `blocks --manager`, `blocks list`, `blocks attach`, `blocks kill`
