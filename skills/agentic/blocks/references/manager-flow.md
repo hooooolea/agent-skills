@@ -2,7 +2,7 @@ Full Manager + Worker protocol. SKILL.md has the compressed version; this is the
 
 ### Invocation Flow (read this first if you are the Manager)
 
-You (this Hermes session) are about to become the Manager. Here is the exact flow:
+You (this agent session) are about to become the Manager. Here is the exact flow:
 
 ```
 USER TRIGGERS                  HERMES DOES
@@ -44,7 +44,7 @@ USER: "kill it"              →   `blocks kill` (or just tell user to
 - `blocks --manager --workers N` — N workers (N must be even, else round up)
 - `blocks --manager --workers 6` — explicit N
 - `分配 4 个员工` / `分配 6 个员工` / `分配 N 个员工` — Chinese
-- `起 4 个 worker` / `起 N 个 worker` / `起 4 个 hermes` — Chinese variant
+- `起 4 个 worker` / `起 N 个 worker` / `起 4 个 $AGENT_CMD` — Chinese variant
 - `manager+workers` / `manager mode` / `4 panes with manager` — English variants
 - `我要 manager` / `manager 模式` / `拆给 4 个员工做` — semantic variants
 
@@ -78,7 +78,7 @@ When you see any of these, **execute the Recipe in your terminal tool**. The Rec
 
 **Why files, not tmux send-keys:** Manager is an LLM, not a deterministic controller. Telling it "use send-keys to dispatch tasks" makes the LLM responsible for tmux syntax, pane indexing, and race conditions. Files are simple, idempotent, inspectable, and survive Manager restarts. They also let the user inspect the system state at any time via `ls ~/blocks-shared/<session>/`.
 
-### What Each Worker Knows (delivered as first message after hermes starts)
+### What Each Worker Knows (delivered as first message after $AGENT_CMD starts)
 
 ```
 You are worker-N in blocks session <SESSION>.
@@ -98,9 +98,9 @@ Do not start any work that is not in your task file. Do not touch other workers'
 If you need help, write a question to results/worker-N.md and stop.
 ```
 
-### What the Manager Knows (this is YOU, the current Hermes session)
+### What the Manager Knows (this is YOU, the current agent session)
 
-When the user invokes `blocks --manager` or "分配 N 个员工", the recipe spawns N workers in tmux and outputs an activation message. **You (this Hermes) become the Manager.** From this point on, every user message in this chat is a task or follow-up for the Manager role.
+When the user invokes `blocks --manager` or "分配 N 个员工", the recipe spawns N workers in tmux and outputs an activation message. **You (this agent) become the Manager.** From this point on, every user message in this chat is a task or follow-up for the Manager role.
 
 **Manager protocol (read this carefully):**
 
@@ -146,7 +146,7 @@ Tell me your task. I will break it into N sub-tasks, dispatch to workers,
 poll for results, and report back here.
 ```
 
-When the user sees this, they know Manager mode is active. They reply with a task, you (this Hermes) follow the protocol.
+When the user sees this, they know Manager mode is active. They reply with a task, you (this agent) follow the protocol.
 
 ### Worker Execution Protocol (the canonical happy path)
 

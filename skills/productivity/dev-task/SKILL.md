@@ -319,7 +319,7 @@ Phase 3 审查发现 {N} 个 FAIL：
 - `CLAUDE.md` / `AGENTS.md` / `.cursorrules` / `.windsurfrules`
 - `.env` / `.env.*` / `*.key` / `*.pem` / `*.p12` / `secrets/` / `credentials/`
 - `Dockerfile` / `docker-compose.yml` / `Dockerfile.*`
-- `~/.hermes/config.yaml` / `~/.hermes/.env` / `~/.hermes/skills/*/SKILL.md`
+- `<agent-config-dir>/config.yaml` / `<agent-config-dir>/.env` / `<agent-config-dir>/skills/*/SKILL.md`  # agent-specific paths: hermes uses ~/.hermes/, claude code uses ~/.claude/, codex uses ~/.codex/
 - `node_modules/` / `target/` / `build/` / `dist/` / `.venv/`
 
 **子代理绝对禁止读**：

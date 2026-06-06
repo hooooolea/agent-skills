@@ -1,7 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # recovery-scan.sh — Salvage blocks work after tmux server death
 # Usage: recovery-scan.sh <project-root> <session-name>
 # Example: recovery-scan.sh ~/projects/myapp blocks-mgr-140959
+#
+# Install: chmod +x scripts/recovery-scan.sh && ./scripts/recovery-scan.sh <root> <session>
+# (Or run directly: bash scripts/recovery-scan.sh <root> <session>)
+#
+# Agent-agnostic: scans files under $HOME/blocks-shared/ regardless of which AI agent
+# the workers were running (hermes, claude, codex, aider all use the same protocol).
 
 set -euo pipefail
 
@@ -24,6 +30,10 @@ fi
 PROJECT_ROOT="$1"
 SESSION="$2"
 SHARED="$HOME/blocks-shared/$SESSION"
+# /tmp/blocks-mgr-session is written by the spawn recipe (Manager-mode activation message)
+# as a launch-timestamp marker. recovery-scan uses `find -newer` against it to identify
+# files modified during the session. Conflicts are harmless (last-write wins) but rename
+# to /tmp/blocks-mgr-session-$PID if running concurrent recovery scans.
 START_MARKER="/tmp/blocks-mgr-session"
 
 echo "=== Blocks Recovery Scan ==="

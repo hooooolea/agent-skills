@@ -109,7 +109,7 @@ The `scripts/recovery-scan.sh` script automates steps 1-3 and prints a status ta
 
 ### Dynamic Pane Operations
 
-The N you set at launch is just the starting layout. Once the session is running, panes can be added, removed, resized, swapped, and zoomed freely. There are two operators: the user (manual tmux keys) and the Manager (you, the main Hermes session).
+The N you set at launch is just the starting layout. Once the session is running, panes can be added, removed, resized, swapped, and zoomed freely. There are two operators: the user (manual tmux keys) and the Manager (you, the main agent session).
 
 **Manual (you, the user):**
 
@@ -142,7 +142,7 @@ tmux split-window -h -t "$SESSION":1.$RIGHT
 
 # Tag and start
 tmux select-pane -t "$SESSION":1.$NEW -T "worker-$NEW"
-tmux send-keys -t "$SESSION":1.$NEW 'hermes' Enter
+tmux send-keys -t "$SESSION":1.$NEW "$AGENT_CMD" Enter
 sleep 6
 tmux send-keys -t "$SESSION":1.$NEW "You are worker-$NEW in $SESSION. Read $SHARED/tasks/worker-$NEW.md. Protocol (REQUIRED): (1) Within 30s of starting: touch $SHARED/done/worker-$NEW-start; (2) do the work, append to results/worker-$NEW.md; (3) when done: touch $SHARED/done/worker-$NEW-final. Start touch = liveness; final touch = finished." Enter
 

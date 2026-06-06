@@ -1,11 +1,14 @@
 ---
 name: blocks
-description: "Use when the user says 'blocks', '分块', '分屏', '2x2', '四宫格', '起N个worker', '分配N个员工', 'manager+workers', or types /blocks. Triggers: 'blocks N', 'blocks 2x2', 'blocks --manager [--workers N]', '分配 N 个员工', '起 N 个 worker'. /blocks slash command (inside a Hermes session) is equivalent. Spawns N parallel Hermes CLIs in one tmux window. N must be even (2/4/6/8). Two modes: flat (N isolated panes, default 2x2) or manager (current chat = Manager; N worker panes coordinate via files at ~/blocks-shared/<session>/{task,plan,tasks,results,done,summary}.md)."
+description: "Use when the user says 'blocks', '分块', '分屏', '2x2', '四宫格', '起N个worker', '分配N个员工', 'manager+workers'. Triggers: 'blocks 2x2', 'blocks 6', 'blocks --manager [--workers N]', '分配 N 个员工', '起 N 个 worker'. Spawns N parallel AI agent CLIs in one tmux window. N must be even (2/4/6/8). Two modes: flat (N isolated panes, default 2x2) or manager (current chat = Manager; N worker panes coordinate via files at ~/blocks-shared/<session>/{task,plan,tasks,results,done,summary}.md). Configurable: AGENT_CMD (default: $AGENT_CMD), AGENT_HOME (default: ~/.$AGENT_CMD). See references/agent-compatibility.md for claude / codex / aider adaptation."
+disable-model-invocation: true
+user-invocable: true
+allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Task
 ---
 
 # Blocks
 
-One tmux window, N parallel Hermes agents.
+One tmux window, N parallel AI agents.
 
 ## When to Use
 
@@ -14,15 +17,15 @@ One tmux window, N parallel Hermes agents.
 - Manager + Workers for a multi-step task.
 
 Skip for:
-- One-off task → `hermes chat -q "..."`.
-- Long autonomous missions → `hermes chat -q` background or `cronjob`.
+- One-off task → `"$AGENT_CMD" -q "..."` (or `--print` for non-interactive).
+- Long autonomous missions → `"$AGENT_CMD" chat -q` background or `cronjob`.
 - Multiple agents editing the same git repo → add `-w` (worktree).
 
 ## Modes
 
 | Mode | Trigger | What |
 |------|---------|------|
-| flat | `blocks 2x2`, `blocks 6` | N isolated Hermes panes, no coordination |
+| flat | `blocks 2x2`, `blocks 6` | N isolated agent panes, no coordination |
 | manager | `blocks --manager`, `分配 N 个员工` | Current chat = Manager; N worker panes coordinate via files |
 
 **Manager is the current chat, not a tmux pane.** User always talks to Manager in main chat; N workers live in tmux so the user can watch.
@@ -33,15 +36,15 @@ Skip for:
 2. **Order of operations is load-bearing:**
    ```
    new-session -x W -y H → split into N shells → resize-pane to equal size
-   → send-keys 'hermes' → sleep 6 → attach
+   → send-keys "$AGENT_CMD" → sleep 6 → attach
    ```
 3. **Never `select-layout tiled` on 1+N (Manager+Workers) layouts** — it re-computes destructively. Safe (but unnecessary) on pure NxM grids if you've already resize-pane'd.
-4. **`send-keys` race**: prompt_toolkit needs ~6s. Always `sleep 6` after `send-keys 'hermes'` and before sending the role prompt.
+4. **`send-keys` race**: prompt_toolkit needs ~6s. Always `sleep 6` after `send-keys "$AGENT_CMD"` and before sending the role prompt.
 5. **Cap single-round work at 6 minutes** (hard 7). Detached macOS tmux servers can be reaped at 10+ min. See `references/tmux-ops.md` § Recovery.
 
 ## Manager Protocol
 
-When you (this Hermes) become the Manager after `blocks --manager`:
+When you (this agent) become the Manager after `blocks --manager`:
 
 1. Save the user's task verbatim to `$SHARED/task.md`.
 2. Write your plan to `$SHARED/plan.md`.
@@ -49,7 +52,7 @@ When you (this Hermes) become the Manager after `blocks --manager`:
 4. Poll `$SHARED/done/` every ~60s. `worker-N-start` = alive; `worker-N-final` = finished.
 5. Read `results/worker-*.md`, aggregate to `$SHARED/summary.md`, paste in chat.
 
-Worker role prompt (sent after `hermes` starts):
+Worker role prompt (sent after `$AGENT_CMD` starts):
 
 ```
 You are worker-N in blocks session <SESSION>.
@@ -68,7 +71,7 @@ Full worker playbook (pre-flight, DONE/PARTIAL/BLOCKED, multi-round, edge cases)
 
 ## Customisation
 
-- **Per-pane profile**: `hermes -p <name>` for total skills/memory/sessions isolation.
+- **Per-pane profile**: "$AGENT_CMD" -p <name> for total skills/memory/sessions isolation.
 - **Per-pane startup prompt**: after the 6s warm-up, `tmux send-keys -t <session>:1.$i 'task' Enter`.
 - **Multi-repo edits**: add `-w` → each pane gets its own git worktree, no index lock.
 - **Auto-open terminal (macOS)**: writes `/tmp/blocks-attach-<session>.command`, `open`s it. Disable with `DISABLE_BLOCKS_AUTOOPEN=1`. See `references/tmux-ops.md` § Auto-open.
@@ -88,6 +91,6 @@ Full worker playbook (pre-flight, DONE/PARTIAL/BLOCKED, multi-round, edge cases)
 
 - [ ] `tmux list-panes -t <session>` shows N panes (N even)
 - [ ] All panes within 1 cell of each other (`pane_width`/`pane_height`)
-- [ ] Each pane shows a Hermes prompt (not blank shell, not "command not found")
-- [ ] Typing into a pane is accepted by the Hermes prompt
+- [ ] Each pane shows a agent prompt(s) (not blank shell, not "command not found")
+- [ ] Typing into a pane is accepted by the agent prompt(s)
 - [ ] `prefix + d` detaches; reattach with `tmux attach -t <session>` or `blocks attach`
