@@ -1,0 +1,22 @@
+# Recommended tmux.conf for blocks — install to ~/.tmux.conf
+# Source of truth: ../references/pitfalls.md (pitfall 5 / 14 / 15)
+
+# Pitfall 5: pane indices start at 1 (matches blocks recipes using :1.$i)
+set -g base-index 1
+setw -g pane-base-index 1
+
+# Pitfall 15: mouse support (click panes, drag borders, wheel-scroll history)
+set -g mouse on
+
+# Pitfall 14: prompt_toolkit needs 256-color TERM
+set -g default-terminal "xterm-256color"
+set -ag default-terminal "screen-256color"
+
+# Larger scrollback (long worker output may need it)
+set -g history-limit 50000
+
+# Renumber windows on close (avoid gaps in window numbering)
+set -g renumber-windows on
+
+# Shorter display-panes delay (default 5s feels slow with N=8)
+set -g display-panes-time 2000
