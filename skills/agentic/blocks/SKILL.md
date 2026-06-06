@@ -1,9 +1,16 @@
 ---
 name: blocks
-description: "Use when the user says 'blocks', '分块', '分屏', '2x2', '四宫格', '起N个worker', '分配N个员工', 'manager+workers'. Triggers: 'blocks 2x2', 'blocks 6', 'blocks --manager [--workers N]', '分配 N 个员工', '起 N 个 worker'. Spawns N parallel AI agent CLIs in one tmux window. N must be even (2/4/6/8). Two modes: flat (N isolated panes, default 2x2) or manager (current chat = Manager; N worker panes coordinate via files at ~/blocks-shared/<session>/{task,plan,tasks,results,done,summary}.md). Configurable: AGENT_CMD (default: $AGENT_CMD), AGENT_HOME (default: ~/.$AGENT_CMD). See references/agent-compatibility.md for claude / codex / aider adaptation."
+description: "Use when the user says 'blocks', '分块', '分屏', '2x2', '四宫格', '起N个worker', '分配N个员工', 'manager+workers'. Triggers: 'blocks 2x2', 'blocks 6', 'blocks --manager [--workers N]', '分配 N 个员工', '起 N 个 worker'. Spawns N parallel AI agent CLIs in one tmux window. N must be even (2/4/6/8). Two modes: flat (N isolated panes, default 2x2) or manager (current chat = Manager; N worker panes coordinate via files at ~/blocks-shared/<session>/{task,plan,tasks,results,done,summary}.md). Configurable: AGENT_CMD (default: hermes), AGENT_HOME (default: ~/.hermes). For per-agent CLI adaptation (claude / codex / aider), see references/agent-compatibility.md."
 disable-model-invocation: true
 user-invocable: true
-allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Task
+allowed-tools: Bash, Read
+license: MIT
+compatibility: "Designed for hermes (default). Adaptable to claude code, codex, aider — see references/agent-compatibility.md. Requires tmux 3.0+ and bash 4+."
+metadata:
+  version: 1.10.0
+  author: ejuer
+  hermes:
+    tags: [tmux, multi-agent, orchestration, blocks, workers]
 ---
 
 # Blocks
@@ -18,7 +25,7 @@ One tmux window, N parallel AI agents.
 
 Skip for:
 - One-off task → `"$AGENT_CMD" -q "..."` (or `--print` for non-interactive).
-- Long autonomous missions → `"$AGENT_CMD" chat -q` background or `cronjob`.
+- Long autonomous missions → `"$AGENT_CMD" chat -q` background or `cronjob` (hermes-only; other agents: use the agent-native equivalent).
 - Multiple agents editing the same git repo → add `-w` (worktree).
 
 ## Modes
@@ -71,9 +78,9 @@ Full worker playbook (pre-flight, DONE/PARTIAL/BLOCKED, multi-round, edge cases)
 
 ## Customisation
 
-- **Per-pane profile**: "$AGENT_CMD" -p <name> for total skills/memory/sessions isolation.
+- **Per-pane profile**: `"$AGENT_CMD" -p <name>` for total skills/memory/sessions isolation (hermes profile flag; see `references/agent-compatibility.md` for claude / codex / aider equivalents).
 - **Per-pane startup prompt**: after the 6s warm-up, `tmux send-keys -t <session>:1.$i 'task' Enter`.
-- **Multi-repo edits**: add `-w` → each pane gets its own git worktree, no index lock.
+- **Multi-repo edits**: add `-w` → each pane gets its own git worktree, no index lock (hermes + claude code only; see `references/agent-compatibility.md`).
 - **Auto-open terminal (macOS)**: writes `/tmp/blocks-attach-<session>.command`, `open`s it. Disable with `DISABLE_BLOCKS_AUTOOPEN=1`. See `references/tmux-ops.md` § Auto-open.
 
 ## References
@@ -91,6 +98,6 @@ Full worker playbook (pre-flight, DONE/PARTIAL/BLOCKED, multi-round, edge cases)
 
 - [ ] `tmux list-panes -t <session>` shows N panes (N even)
 - [ ] All panes within 1 cell of each other (`pane_width`/`pane_height`)
-- [ ] Each pane shows a agent prompt(s) (not blank shell, not "command not found")
-- [ ] Typing into a pane is accepted by the agent prompt(s)
+- [ ] Each pane shows an agent prompt (not blank shell, not "command not found")
+- [ ] Typing into a pane is accepted by the agent prompt
 - [ ] `prefix + d` detaches; reattach with `tmux attach -t <session>` or `blocks attach`

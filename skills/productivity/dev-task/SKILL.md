@@ -1,6 +1,11 @@
 ---
 name: dev-task
-description: "Use when the user says '实现', '开发', '加功能', '改代码', '写代码', '修复', '重构', or types /dev-task. Run a 5-phase multi-sub-agent dev workflow: 拆任务→探索→编码→审查→收尾. Three sub-agents are context-isolated; the main agent hand-copies context between phases. Phase 3 (review) is mandatory — runs in a sub-agent and emits PASS/WARN/FAIL with a final verdict (通过 / 有条件通过 / 不通过). Project-type agnostic (Java / Python / Node / Go / etc). Hard limits on task size, file blacklist, sub-agent tool whitelist, and 9-item DoD enforced at Phase 0 / 4."
+description: "Use when the user says '实现', '开发', '加功能', '改代码', '写代码', '修复', '重构'. Run a 5-phase multi-sub-agent dev workflow: 拆任务→探索→编码→审查→收尾. Three sub-agents are context-isolated; the main agent hand-copies context between phases. Phase 3 (review) is mandatory — runs in a sub-agent and emits PASS/WARN/FAIL with a final verdict (通过 / 有条件通过 / 不通过). Project-type agnostic (Java / Python / Node / Go / etc). Hard limits on task size, file blacklist, sub-agent tool whitelist, and 9-item DoD enforced at Phase 0 / 4."
+disable-model-invocation: true
+user-invocable: true
+license: MIT
+compatibility: "Designed for hermes (uses delegate_task, todo, terminal, write_file, patch, read_file, search_files, clarify). Cross-agent tool mapping table for claude code provided in body § 工具映射. Requires git and a project manifest (pom.xml / package.json / requirements.txt / go.mod / Cargo.toml)."
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob, Task
 metadata:
   version: "1.4.0"
   author: ejuer

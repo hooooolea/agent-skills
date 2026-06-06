@@ -1,6 +1,16 @@
 ---
 name: session-summary
 description: "Use when the user says 'summarize', 'summary', 'save state', 'save progress', 'session summary', 'help me document', 'milestone', or 'checkpoint'. Generate a structured `.session_summary.md` file at the end of any complex session or milestone, capturing current state, next steps, and known issues so the next session can resume instantly without re-explaining the project."
+disable-model-invocation: false
+user-invocable: true
+license: MIT
+compatibility: "Agent-agnostic. Writes only to `.session_summary.md` in the project root. Pure file I/O; no CLI binding."
+allowed-tools: Read, Write
+metadata:
+  version: 1.0.0
+  author: ejuer
+  hermes:
+    tags: [productivity, summary, session, handoff, checkpoint]
 ---
 
 # Session Summary Generator
