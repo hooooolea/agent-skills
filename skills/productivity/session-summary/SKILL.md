@@ -1,20 +1,6 @@
 ---
-layout: default
-name: session-summary-generator
-description: >
-  Generate structured session summaries so you never lose project context.
-  At the end of any complex session, ask your agent to write a
-  `.session_summary.md` file capturing current state, next steps, and
-  known issues. Next session, read it and resume instantly.
-triggers:
-  - summarize
-  - summary
-  - save state
-  - save progress
-  - session summary
-  - help me document
-  - milestone
-  - checkpoint
+name: session-summary
+description: "Use when the user says 'summarize', 'summary', 'save state', 'save progress', 'session summary', 'help me document', 'milestone', or 'checkpoint'. Generate a structured `.session_summary.md` file at the end of any complex session or milestone, capturing current state, next steps, and known issues so the next session can resume instantly without re-explaining the project."
 ---
 
 # Session Summary Generator
