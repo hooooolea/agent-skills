@@ -1,18 +1,10 @@
 ---
 layout: default
 name: dev-task
-description: 5-phase 多子代理开发工作流（拆任务→探索→编码→审查→收尾）。三子代理上下文隔离，串联靠主代理手动复制粘贴。审核（Phase 3）是流程必备，跑在子代理里。
-version: 1.4.0
-author: ejuer
-triggers:
-  - 实现
-  - 开发
-  - 加功能
-  - 改代码
-  - 写代码
-  - 修复
-  - 重构
+description: "Use when the user says '实现', '开发', '加功能', '改代码', '写代码', '修复', '重构', or types /dev-task. Run a 5-phase multi-sub-agent dev workflow: 拆任务→探索→编码→审查→收尾. Three sub-agents are context-isolated; the main agent hand-copies context between phases. Phase 3 (review) is mandatory — runs in a sub-agent and emits PASS/WARN/FAIL with a final verdict (通过 / 有条件通过 / 不通过). Project-type agnostic (Java / Python / Node / Go / etc). Hard limits on task size, file blacklist, sub-agent tool whitelist, and 9-item DoD enforced at Phase 0 / 4."
 metadata:
+  version: "1.4.0"
+  author: ejuer
   hermes:
     tags: [workflow, multi-agent, dev, automation, orchestration]
 ---
