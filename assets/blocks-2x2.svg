@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 820" width="1100" height="820">
+<rect width="1100" height="820" fill="#0f1115"/>
+<text x="30" y="36" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="20" font-weight="700">blocks 2x2 — Manager + 4 workers in one tmux window</text>
+<text x="30" y="58" fill="#9ca3af" font-family="Menlo, Monaco, Consolas, monospace" font-size="12">Current chat = Manager · ~/blocks-shared/&lt;session&gt;/</text>
+<rect x="30" y="90" width="530" height="360" fill="#1a1d24" rx="6" stroke="#2a2f38" stroke-width="1"/>
+<rect x="30" y="90" width="530" height="32" fill="#232830" rx="6"/>
+<rect x="30" y="116" width="530" height="6" fill="#232830"/>
+<circle cx="42" cy="106.0" r="5" fill="#ef4444"/>
+<circle cx="58" cy="106.0" r="5" fill="#f59e0b"/>
+<circle cx="74" cy="106.0" r="5" fill="#22c55e"/>
+<text x="102" y="111.0" fill="#f59e0b" font-family="Menlo, Monaco, Consolas, monospace" font-size="14" font-weight="600">worker-1: SKILL.md spec audit</text>
+<text x="42" y="134" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">1. references/agent-compatibility.md referenced in body</text>
+<text x="42" y="152" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">   but missing from References table (recoverable).</text>
+<text x="42" y="170" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">2. description front-loads config/env-var details; some</text>
+<text x="42" y="188" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">   loaders only consume the first ~250 chars.</text>
+<text x="42" y="206" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">3. references/tmux-ops.md fragment anchors (§ Recovery /</text>
+<text x="42" y="224" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">   § Auto-open) need matching headings to exist.</text>
+<text x="42" y="242" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">4. license / compatibility / metadata fields are</text>
+<text x="42" y="260" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">   non-standard but harmless if loader ignores unknown.</text>
+<text x="42" y="278" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13"></text>
+<text x="42" y="296" fill="#f59e0b" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">Result: /Users/ejuer/blocks-shared/.../worker-1.md</text>
+<text x="42" y="314" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">Both worker-1-start and worker-1-final markers touched.</text>
+<rect x="30" y="422" width="530" height="28" fill="#1f242c"/>
+<rect x="30" y="422" width="530" height="6" fill="#1f242c"/>
+<text x="42" y="440.0" fill="#9aa4b2" font-family="Menlo, Monaco, Consolas, monospace" font-size="11">⚕ MiniMax-M3</text>
+<rect x="400" y="433.0" width="120" height="6" fill="#2a2f38" rx="3"/>
+<rect x="400" y="433.0" width="7" height="6" fill="#f59e0b" rx="3"/>
+<text x="528" y="440.0" fill="#9aa4b2" font-family="Menlo, Monaco, Consolas, monospace" font-size="11">6%</text>
+<text x="42" y="444" fill="#f59e0b" font-family="Menlo, Monaco, Consolas, monospace" font-size="14">❯</text>
+<rect x="580" y="90" width="530" height="360" fill="#1a1d24" rx="6" stroke="#2a2f38" stroke-width="1"/>
+<rect x="580" y="90" width="530" height="32" fill="#232830" rx="6"/>
+<rect x="580" y="116" width="530" height="6" fill="#232830"/>
+<circle cx="592" cy="106.0" r="5" fill="#ef4444"/>
+<circle cx="608" cy="106.0" r="5" fill="#f59e0b"/>
+<circle cx="624" cy="106.0" r="5" fill="#22c55e"/>
+<text x="652" y="111.0" fill="#60a5fa" font-family="Menlo, Monaco, Consolas, monospace" font-size="14" font-weight="600">worker-2: dev-task spec audit</text>
+<text x="592" y="134" fill="#f59e0b" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">Recommended full frontmatter provided in §3 of result</text>
+<text x="592" y="152" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">file (copy-paste ready).</text>
+<text x="592" y="170" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13"></text>
+<text x="592" y="188" fill="#9ca3af" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">Files written:</text>
+<text x="592" y="206" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">  ~/blocks-shared/.../results/worker-2.md (8,744 bytes)</text>
+<text x="592" y="224" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">  ~/blocks-shared/.../done/worker-2-start (touched)</text>
+<text x="592" y="242" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">  ~/blocks-shared/.../done/worker-2-final (touched)</text>
+<text x="592" y="260" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13"></text>
+<text x="592" y="278" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">No source files modified.</text>
+<rect x="580" y="422" width="530" height="28" fill="#1f242c"/>
+<rect x="580" y="422" width="530" height="6" fill="#1f242c"/>
+<text x="592" y="440.0" fill="#9aa4b2" font-family="Menlo, Monaco, Consolas, monospace" font-size="11">⚕ MiniMax-M3</text>
+<rect x="950" y="433.0" width="120" height="6" fill="#2a2f38" rx="3"/>
+<rect x="950" y="433.0" width="8" height="6" fill="#f59e0b" rx="3"/>
+<text x="1078" y="440.0" fill="#9aa4b2" font-family="Menlo, Monaco, Consolas, monospace" font-size="11">7%</text>
+<text x="592" y="444" fill="#f59e0b" font-family="Menlo, Monaco, Consolas, monospace" font-size="14">❯</text>
+<rect x="30" y="470" width="530" height="360" fill="#1a1d24" rx="6" stroke="#2a2f38" stroke-width="1"/>
+<rect x="30" y="470" width="530" height="32" fill="#232830" rx="6"/>
+<rect x="30" y="496" width="530" height="6" fill="#232830"/>
+<circle cx="42" cy="486.0" r="5" fill="#ef4444"/>
+<circle cx="58" cy="486.0" r="5" fill="#f59e0b"/>
+<circle cx="74" cy="486.0" r="5" fill="#22c55e"/>
+<text x="102" y="491.0" fill="#a78bfa" font-family="Menlo, Monaco, Consolas, monospace" font-size="14" font-weight="600">worker-3: session-summary spec audit</text>
+<text x="42" y="514" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">Body length (~700 tokens), no broken refs, no secrets,</text>
+<text x="42" y="532" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">no broken internal links.</text>
+<text x="42" y="550" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13"></text>
+<text x="42" y="568" fill="#fbbf24" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">WARN: missing Examples/Verification section —</text>
+<text x="42" y="586" fill="#f59e0b" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">  ## Output Structure is a schema, not examples.</text>
+<text x="42" y="604" fill="#f59e0b" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">  Recommended appending a ## Verification checkbox list.</text>
+<text x="42" y="622" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13"></text>
+<text x="42" y="640" fill="#60a5fa" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">INFO: ## When to Generate could be renamed to</text>
+<text x="42" y="658" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">  ## When to Use for canonical consistency.</text>
+<text x="42" y="676" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13"></text>
+<text x="42" y="694" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">Full audit: /Users/ejuer/blocks-shared/.../worker-3.md</text>
+<rect x="30" y="802" width="530" height="28" fill="#1f242c"/>
+<rect x="30" y="802" width="530" height="6" fill="#1f242c"/>
+<text x="42" y="820.0" fill="#9aa4b2" font-family="Menlo, Monaco, Consolas, monospace" font-size="11">⚕ MiniMax-M3</text>
+<rect x="400" y="813.0" width="120" height="6" fill="#2a2f38" rx="3"/>
+<rect x="400" y="813.0" width="7" height="6" fill="#f59e0b" rx="3"/>
+<text x="528" y="820.0" fill="#9aa4b2" font-family="Menlo, Monaco, Consolas, monospace" font-size="11">6%</text>
+<text x="42" y="824" fill="#f59e0b" font-family="Menlo, Monaco, Consolas, monospace" font-size="14">❯</text>
+<rect x="580" y="470" width="530" height="360" fill="#1a1d24" rx="6" stroke="#2a2f38" stroke-width="1"/>
+<rect x="580" y="470" width="530" height="32" fill="#232830" rx="6"/>
+<rect x="580" y="496" width="530" height="6" fill="#232830"/>
+<circle cx="592" cy="486.0" r="5" fill="#ef4444"/>
+<circle cx="608" cy="486.0" r="5" fill="#f59e0b"/>
+<circle cx="624" cy="486.0" r="5" fill="#22c55e"/>
+<text x="652" y="491.0" fill="#34d399" font-family="Menlo, Monaco, Consolas, monospace" font-size="14" font-weight="600">worker-4: cross-skill synthesis</text>
+<text x="592" y="514" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">All 3 skills PASS the 5 required frontmatter fields +</text>
+<text x="592" y="532" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">5000-token cap. Zero FAILs.</text>
+<text x="592" y="550" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13"></text>
+<text x="592" y="568" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">6 cross-skill patterns identified, 4 are MEDIUM</text>
+<text x="592" y="586" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">(3 hit all 3 skills: metadata.hermes portability,</text>
+<text x="592" y="604" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">compatibility semantics, non-standard frontmatter;</text>
+<text x="592" y="622" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">1 hits 2/3: missing ## Verification).</text>
+<text x="592" y="640" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13"></text>
+<text x="592" y="658" fill="#f59e0b" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">Recommended action: one coordinated PR fixing</text>
+<text x="592" y="676" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">metadata hoisting + compatibility reframe +</text>
+<text x="592" y="694" fill="#e5e7eb" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">Verification section + When-to-Use header renames.</text>
+<text x="592" y="712" fill="#f59e0b" font-family="Menlo, Monaco, Consolas, monospace" font-size="13">Output: /Users/ejuer/blocks-shared/.../worker-4.md</text>
+<rect x="580" y="802" width="530" height="28" fill="#1f242c"/>
+<rect x="580" y="802" width="530" height="6" fill="#1f242c"/>
+<text x="592" y="820.0" fill="#9aa4b2" font-family="Menlo, Monaco, Consolas, monospace" font-size="11">⚕ MiniMax-M3</text>
+<rect x="950" y="813.0" width="120" height="6" fill="#2a2f38" rx="3"/>
+<rect x="950" y="813.0" width="10" height="6" fill="#f59e0b" rx="3"/>
+<text x="1078" y="820.0" fill="#9aa4b2" font-family="Menlo, Monaco, Consolas, monospace" font-size="11">9%</text>
+<text x="592" y="824" fill="#f59e0b" font-family="Menlo, Monaco, Consolas, monospace" font-size="14">❯</text>
+<text x="30" y="810" fill="#9ca3af" font-family="Menlo, Monaco, Consolas, monospace" font-size="11">Flat mode: N isolated panes · Manager mode: current chat = Manager, N worker panes coordinate via files</text>
+</svg>

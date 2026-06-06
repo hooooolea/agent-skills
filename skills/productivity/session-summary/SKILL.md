@@ -17,7 +17,7 @@ metadata:
 
 Generate a structured `.session_summary.md` file at the end of every significant session or when the user reaches a milestone. This file enables any future agent session to resume instantly without re-explaining the project.
 
-## When to Generate
+## When to Use
 
 Run this skill when:
 - The user says "summarize", "save state", "save progress", or "session summary"
@@ -57,6 +57,22 @@ Last Agent: [agent name and model]
 ## Known Issues
 - [Issue] — [Current status or workaround]
 ```
+
+## Pitfalls
+
+- **Writing to a subdirectory** — always `.session_summary.md` at the project root. If the working directory is a subdir (e.g. `packages/foo/`), write the file to the repo root, not the local cwd.
+- **Including credentials** — even `[REDACTED]` for placeholders is fine; never the actual value. If the session needed `ANTHROPIC_API_KEY`, write that the env var is required and where to set it.
+- **Vague "next steps"** — "continue work" or "finish the rest" defeats the purpose. Specific file paths, line numbers, and what the next action is.
+- **Overwriting without reading** — if `.session_summary.md` already exists from a prior session, read it first to preserve continuity (e.g. open issues that span sessions).
+
+## Verification
+
+Before reporting done:
+- [ ] File path is exactly `.session_summary.md` at the project root
+- [ ] All 6 sections present: Project Overview / Current Active Work / Goal / Completed Actions / Next Steps / Known Issues
+- [ ] File paths are absolute (e.g. `/Users/...` not `./...`)
+- [ ] No actual API keys or tokens in the file
+- [ ] "Next Steps" item #1 is a single concrete action (not a list of options)
 
 ## Rules
 

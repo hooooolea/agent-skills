@@ -438,3 +438,21 @@ Phase 4 收尾前主代理**必须**逐条 check：
 | 触发 SCOPE_TOO_LARGE / NO_CHANGE / DOD_FAIL | 按错误处理表执行 |
 | 触发 INPUT_TOO_VAGUE / NO_MANIFEST | 立即退出，提示用户 |
 | 用户连续选 C 3 次 | USER_ABANDONED 退出 |
+
+
+## Canonical English index
+
+This file uses Chinese headers for readability. English canonical equivalents per the [SKILL.md open standard](https://agentskills.io/specification):
+
+| Canonical English | Chinese header in this file | Purpose |
+|-------------------|----------------------------|---------|
+| Overview | ## 设计哲学 | Design philosophy (5-phase rationale) |
+| When to Use | ## 触发判断 | Trigger conditions (`/dev-task`, "实现", "改代码", ...) |
+| Pitfalls | ## 失败模式 | Common failure modes + USER_ABANDONED exit |
+| Verification | ## 完成定义 DoD | 9-item Definition of Done (硬指标) |
+
+When a cross-agent loader (Claude Code, Codex, Cursor) reads this file, the above Chinese headers carry the content; the English index is for spec compliance checking.
+
+## Compatibility
+
+Cross-agent tool mapping: `## 工具映射` table maps Hermes tool names (`delegate_task`, `terminal`, `write_file`, `patch`, `read_file`, `search_files`, `clarify`, `todo`) to Claude Code tool names (`Task`, `Bash`, `Write`, `Edit`, `Read`, `Grep`, `Glob`, `AskUserQuestion`, `TodoWrite`).
