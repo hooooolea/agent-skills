@@ -60,10 +60,14 @@ Three steps to get all 3 skills running on any agent:
 
 ## When NOT to use
 
-- 你要写的是 agent framework / runtime / SDK — 那是 `hermes-agent` / `claude-code` 本体的事，不是 skill 的事
-- 工作流是一次性的（不会重复 2 次）— 写 prompt 比写 SKILL.md 快
-- 需要 GUI / IDE 集成 — skill 是纯文本约定，没有 UI 规范
-- 你已经有成熟的工作流（> 1 年积累） — 那应该 fork 维护成自己的 private repo，而不是从零写
+按 **错位** (用错场景) 和 **过剩** (用过度场景) 两类:
+
+| 分类 | 场景 | 替代 |
+|------|------|------|
+| 错位 | 写 agent framework / runtime / SDK | `hermes-agent` / `claude-code` 本体的事 |
+| 过剩 | 一次性工作流 (不会重复 2 次) | ad-hoc prompt 更快 |
+| 错位 | 需要 GUI / IDE 集成 | skill 是纯文本, 等 spec 加 GUI 段位 |
+| 过剩 | 已有 > 1 年成熟工作流 | fork 维护成 private repo |
 
 ## Contributing
 
