@@ -28,6 +28,28 @@ Skip for:
 - Long autonomous missions → `"$AGENT_CMD" chat -q` background or `cronjob` (hermes-only; other agents: use the agent-native equivalent).
 - Multiple agents editing the same git repo → add `-w` (worktree).
 
+## Quickstart
+
+From zero to N parallel agent panes in 3 steps:
+
+1. **Install** (any agent that supports the SKILL.md open standard):
+   ```bash
+   npx skills add hooooolea/agent-skills
+   ```
+   Or copy `skills/agentic/blocks/` to `~/.{agent}/skills/blocks/` manually. Herme: `~/.hermes/skills/blocks/`, Claude Code: `~/.claude/skills/blocks/`, Codex: `~/.codex/skills/blocks/`, Aider: per-repo `.aider/skills/blocks/`.
+
+2. **Spawn a flat grid** (N isolated panes, no coordination — each pane is its own agent session):
+   ```bash
+   blocks 2x2
+   ```
+   N must be even (2/4/6/8). 4 panes by default.
+
+3. **Spawn Manager + Workers** (current chat = Manager; N workers coordinate via files at `~/blocks-shared/<session>/{task,plan,tasks,results,done,summary}.md`):
+   ```bash
+   blocks --manager --workers 3
+   ```
+   Then in this chat: write a task, watch the 3 workers run in tmux, paste `summary.md` when done. See [Manager Protocol](#manager-protocol) for the file-based coordination protocol.
+
 ## Modes
 
 | Mode | Trigger | What |
@@ -93,6 +115,46 @@ Full worker playbook (pre-flight, DONE/PARTIAL/BLOCKED, multi-round, edge cases)
 | tmux split direction + recovery + dynamic pane ops + auto-open | `references/tmux-ops.md` |
 | `recovery-scan.sh` — salvage work after tmux server death | `scripts/recovery-scan.sh` |
 | Recommended `tmux.conf` snippet (`set -g mouse on` etc.) | `templates/tmux.conf.blocks` |
+
+## Examples
+
+Three real use cases — flat grid for A/B, manager for parallel research, file protocol for the orchestration itself.
+
+### 1. A/B compare 4 models on one prompt (flat 2x2)
+
+You wrote a tricky prompt. One model isn't enough signal — you want 4 opinions in parallel without 4 separate chat sessions.
+
+1. `blocks 2x2 --label regex-test` — spawns 4 isolated panes, **no coordination**, each is its own agent session
+2. Each pane gets the same prompt but a different `--model` (set via `~/.hermes/config.yaml` profiles, or per-pane startup prompt)
+3. Watch all 4 in tmux, screenshot the best answer, kill the rest with `blocks kill regex-test`
+
+vs. 4 separate chat sessions: ~4× the wall-clock, ~4× the context-switching tax.
+
+### 2. Research 4 LLM API prices in parallel (manager + 4 workers)
+
+Goal: get pricing for OpenAI / Anthropic / Google / Mistral APIs and ship a comparison table.
+
+1. In this chat (Manager): `blocks --manager --workers 4`
+2. Write the task: "Each worker researches 1 of: openai/anthropic/google/mistral. Save to `results/worker-N.md`. Include input/output $ per 1M tokens, context window, batch discount, free tier."
+3. 4 tmux panes appear. Each reads `task.md`, touches `done/worker-N-start` (liveness), does the work, writes `results/worker-N.md`, touches `done/worker-N-final`
+4. After ~3 min all 4 `done/worker-N-final` files exist. Manager sees "4/4 finished", reads all 4 results, writes `summary.md`
+5. You paste `summary.md` → comparison table
+
+vs. sequential: ~12 min. With blocks: ~3 min wall clock + ~30s orchestration overhead.
+
+### 3. The 5-step file protocol (what Manager + Workers actually do)
+
+| Step | Who | Action | File touched |
+|------|-----|--------|--------------|
+| 1 | Manager (this chat) | Write the task | `task.md` |
+| 2 | Workers (N tmux panes) | Each reads `task.md`, touches liveness signal | `done/worker-N-start` |
+| 3 | Workers | Do the work, append findings | `results/worker-N.md` |
+| 4 | Workers | Touch final signal | `done/worker-N-final` |
+| 5 | Manager | Collect N results, write synthesis | `summary.md` |
+
+All paths under `~/blocks-shared/<session>/`. Workers can't see each other (no IPC) — coordination is **purely file-based**, which is what makes the protocol robust to tmux/agent crashes (`scripts/recovery-scan.sh` salvages whatever's already in `results/`).
+
+Full protocol with edge cases (DONE/PARTIAL/BLOCKED, multi-round, agent crash mid-write, late results) → `references/manager-flow.md`.
 
 ## Verification
 

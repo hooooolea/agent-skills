@@ -8,10 +8,25 @@
 
 **三个 SKILL.md，跨 Hermes / Claude Code / Codex / Aider。** 任何支持 [SKILL.md 开放标准](https://agentskills.io/specification) 的 agent 都能装。
 
-> 一行安装：
-> ```bash
-> npx skills add hooooolea/agent-skills
-> ```
+## Quickstart
+
+Three steps from zero to 3 working skills:
+
+1. **Install** (works for any agent that supports the [SKILL.md open standard](https://agentskills.io/specification)):
+   ```bash
+   npx skills add hooooolea/agent-skills
+   ```
+   Or skip `npx` and copy manually — see [手动安装](#手动安装不用-npx-skills) below.
+
+2. **Pick your agent** — `npx skills` auto-detects Claude Code / Codex / Cursor. For Hermes (or any unsupported agent):
+   ```bash
+   cp -r skills/* ~/.hermes/skills/
+   ```
+
+3. **Restart your agent**, then in chat say one of:
+   - "用 2x2 跑 4 个 agent 对比 X" → triggers `blocks`
+   - "实现 / 开发 / 改代码" → triggers `dev-task`
+   - "session 收尾 / 存个档" → triggers `session-summary`
 
 ## 为什么
 
@@ -73,12 +88,33 @@ Issues / PRs 都欢迎。改 SKILL.md 前先读 [agentskills.io spec](https://ag
 
 每个 PR 触发 CI 跑 [check-skill-spec.py](https://github.com/hooooolea/hermes-agent/blob/main/skills/software-development/hermes-agent-skill-authoring/scripts/check-skill-spec.py)：description ≤ 1024 chars、name 匹配父目录、body ≤ 500 行、无 `or types /<name>` 触发。
 
+## Resources
+
+### Official documentation
+- [agentskills.io spec](https://agentskills.io/specification) — the open standard
+- [Anthropic skills announcement](https://www.anthropic.com/news/skills) (Oct 2025) — the original writeup
+
+### Community
+- [ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) — 1000+ skills curated list
+- [Vercel `npx skills` CLI](https://github.com/vercel-labs/skills) — cross-agent install (50+ agents)
+- [SkillsMP.com](https://skillsmp.com) — auto-index of public GitHub SKILL.md
+
+### Inspiration
+- [Anthropic skills repo](https://github.com/anthropics/skills) — example skills
+- [Lenny's Newsletter](https://www.lennysnewsletter.com/p/everyone-should-be-using-claude-code) — 50 Claude Code use cases
+
 ## Acknowledgments
 
-- [Anthropic](https://www.anthropic.com/) — 发布 SKILL.md 开放标准
-- [ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) — 英文主要 awesome list
-- [Vercel](https://vercel.com/) — `npx skills` CLI 跨 agent 统一安装（支持 Claude Code / Codex / Cursor / OpenCode / 50+ 工具）
-- [SkillsMP](https://skillsmp.com) — auto-index 公开 GitHub SKILL.md
+- [Anthropic](https://www.anthropic.com/) — published the SKILL.md open standard
+- [Vercel](https://vercel.com/) — `npx skills` CLI cross-agent install
+- [ComposioHQ](https://github.com/ComposioHQ/awesome-claude-skills) — community curation
+- [SkillsMP](https://skillsmp.com) — auto-index of public SKILL.md
+
+## Community
+
+没 Discord — 用 GitHub Issues / Discussions 凑合：
+- [Issues](https://github.com/hooooolea/agent-skills/issues) — bug / feature request
+- [Discussions](https://github.com/hooooolea/agent-skills/discussions) — Q&A / 想法
 
 ## Live site
 
