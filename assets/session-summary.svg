@@ -1,40 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 320" width="1000" height="320">
-  <rect width="1000" height="320" fill="#0f1115"/>
-  <text x="30" y="36" fill="#e5e7eb" font-family="Menlo,monospace" font-size="20" font-weight="700">session-summary — .session_summary.md template (6 sections)</text>
-  <text x="30" y="58" fill="#9ca3af" font-family="Menlo,monospace" font-size="12">pure file I/O · agent-agnostic · writes to project root only</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 380" width="1000" height="380">
+  <rect width="1000" height="380" fill="#0f1115"/>
+  <text x="30" y="36" fill="#e5e7eb" font-family="Menlo,monospace" font-size="20" font-weight="700">session-summary — .session_summary.md template (6 sections, all hard-required)</text>
+  <text x="30" y="58" fill="#9ca3af" font-family="Menlo,monospace" font-size="12">pure file I/O · agent-agnostic · writes to project root only · no API keys in output</text>
 
-  <!-- File header (mimics terminal output) -->
-  <rect x="30" y="80" width="940" height="220" fill="#1a1d24" rx="6" stroke="#2a2f38"/>
-  <rect x="30" y="80" width="940" height="22" fill="#232830" rx="6"/>
-  <text x="80" y="96" fill="#f59e0b" font-family="Menlo,monospace" font-size="12" font-weight="600">.session_summary.md</text>
+  <!-- File header bar -->
+  <rect x="30" y="78" width="940" height="22" fill="#232830" rx="6"/>
+  <text x="44" y="94" fill="#f59e0b" font-family="Menlo,monospace" font-size="12" font-weight="600">.session_summary.md</text>
 
-  <g font-family="Menlo,monospace" font-size="12">
-    <text x="50" y="125" fill="#e5e7eb">## Project Overview</text>
-    <text x="50" y="148" fill="#9ca3af">  2-3 sentences: what this project is, tech stack</text>
+  <!-- 6 sections — title + ✓ on same row (x=900 far right), description on next row (no ✓) -->
+  <text x="44" y="125" fill="#e5e7eb" font-family="Menlo,monospace" font-size="12" font-weight="600">## Project Overview</text>
+  <text x="900" y="125" fill="#22c55e" font-family="Menlo,monospace" font-size="12" font-weight="600">✓</text>
+  <text x="44" y="142" fill="#9ca3af" font-family="Menlo,monospace" font-size="10">2-3 sentences: what this project is, tech stack</text>
 
-    <text x="50" y="175" fill="#e5e7eb">## Current Active Work</text>
-    <text x="50" y="198" fill="#9ca3af">  file names, line numbers, what was about to happen</text>
+  <text x="44" y="165" fill="#e5e7eb" font-family="Menlo,monospace" font-size="12" font-weight="600">## Current Active Work</text>
+  <text x="900" y="165" fill="#22c55e" font-family="Menlo,monospace" font-size="12" font-weight="600">✓</text>
+  <text x="44" y="182" fill="#9ca3af" font-family="Menlo,monospace" font-size="10">file names, line numbers, what was about to happen next</text>
 
-    <text x="50" y="225" fill="#e5e7eb">## Goal  ·  ## Completed Actions  ·  ## Next Steps  ·  ## Known Issues</text>
-    <text x="50" y="248" fill="#9ca3af">  4 more sections, all required</text>
+  <text x="44" y="205" fill="#e5e7eb" font-family="Menlo,monospace" font-size="12" font-weight="600">## Goal</text>
+  <text x="900" y="205" fill="#22c55e" font-family="Menlo,monospace" font-size="12" font-weight="600">✓</text>
+  <text x="44" y="222" fill="#9ca3af" font-family="Menlo,monospace" font-size="10">what you're trying to accomplish in the near term</text>
 
-    <text x="50" y="275" fill="#f59e0b">→ next session reads this, resumes in 0 questions asked</text>
-  </g>
+  <text x="44" y="245" fill="#e5e7eb" font-family="Menlo,monospace" font-size="12" font-weight="600">## Completed Actions</text>
+  <text x="900" y="245" fill="#22c55e" font-family="Menlo,monospace" font-size="12" font-weight="600">✓</text>
+  <text x="44" y="262" fill="#9ca3af" font-family="Menlo,monospace" font-size="10">1. [Action] — File: [path] — Result: [what happened]</text>
 
-  <!-- Right-side annotation -->
-  <text x="500" y="125" fill="#22c55e" font-family="Menlo,monospace" font-size="11" font-weight="600">✓</text>
-  <text x="520" y="125" fill="#9ca3af" font-family="Menlo,monospace" font-size="10">6 sections hard-required</text>
+  <text x="44" y="285" fill="#e5e7eb" font-family="Menlo,monospace" font-size="12" font-weight="600">## Next Steps</text>
+  <text x="900" y="285" fill="#22c55e" font-family="Menlo,monospace" font-size="12" font-weight="600">✓</text>
+  <text x="44" y="302" fill="#9ca3af" font-family="Menlo,monospace" font-size="10">priority order — item #1 = single concrete action, not a list of options</text>
 
-  <text x="500" y="148" fill="#22c55e" font-family="Menlo,monospace" font-size="11" font-weight="600">✓</text>
-  <text x="520" y="148" fill="#9ca3af" font-family="Menlo,monospace" font-size="10">absolute file paths</text>
+  <text x="44" y="325" fill="#e5e7eb" font-family="Menlo,monospace" font-size="12" font-weight="600">## Known Issues</text>
+  <text x="900" y="325" fill="#22c55e" font-family="Menlo,monospace" font-size="12" font-weight="600">✓</text>
+  <text x="44" y="342" fill="#9ca3af" font-family="Menlo,monospace" font-size="10">[Issue] — [current status or workaround]</text>
 
-  <text x="500" y="175" fill="#22c55e" font-family="Menlo,monospace" font-size="11" font-weight="600">✓</text>
-  <text x="520" y="175" fill="#9ca3af" font-family="Menlo,monospace" font-size="10">no API keys, [REDACTED] only</text>
-
-  <text x="500" y="198" fill="#22c55e" font-family="Menlo,monospace" font-size="11" font-weight="600">✓</text>
-  <text x="520" y="198" fill="#9ca3af" font-family="Menlo,monospace" font-size="10">"Next Steps" #1 = single action</text>
-
-  <text x="500" y="225" fill="#22c55e" font-family="Menlo,monospace" font-size="11" font-weight="600">✓</text>
-  <text x="500" y="245" fill="#9ca3af" font-family="Menlo,monospace" font-size="10">overwrite (don't append)</text>
-  <text x="500" y="260" fill="#9ca3af" font-family="Menlo,monospace" font-size="10">if file exists, read first</text>
+  <!-- Footer: behavior -->
+  <text x="30" y="368" fill="#f59e0b" font-family="Menlo,monospace" font-size="11" font-weight="600">→ next session reads this, resumes in 0 questions asked</text>
 </svg>
