@@ -32,3 +32,5 @@ build/
 *.tmp
 *.bak
 *.swp
+
+.session_summary.md
