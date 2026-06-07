@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" width="520" height="400">
+  <rect width="520" height="400" fill="#0f1115"/>
+  <text x="20" y="32" fill="#e5e7eb" font-family="Menlo,monospace" font-size="18" font-weight="700">worker-3 / worker-4 (combined view)</text>
+
+  <!-- worker-3 (top half) -->
+  <rect x="20" y="55" width="480" height="155" fill="#1a1d24" rx="6" stroke="#2a2f38"/>
+  <rect x="20" y="55" width="480" height="22" fill="#232830" rx="6"/>
+  <text x="80" y="71" fill="#f59e0b" font-family="Menlo,monospace" font-size="12" font-weight="600">worker-3 — research Google pricing</text>
+  <text x="30" y="100" fill="#22c55e" font-family="Menlo,monospace" font-size="12">✓ final touched  ·  30s ago</text>
+  <text x="30" y="125" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">## Google</text>
+  <text x="30" y="143" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">  - Gemini 2.5 Pro: $1.25 / $10 per 1M tok</text>
+  <text x="30" y="161" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">  - context: 1M (Pro), 1M (Flash)</text>
+  <text x="30" y="186" fill="#9ca3af" font-family="Menlo,monospace" font-size="11">→ ready for Manager collection</text>
+
+  <!-- worker-4 (bottom half) -->
+  <rect x="20" y="225" width="480" height="155" fill="#1a1d24" rx="6" stroke="#2a2f38"/>
+  <rect x="20" y="225" width="480" height="22" fill="#232830" rx="6"/>
+  <text x="80" y="241" fill="#f59e0b" font-family="Menlo,monospace" font-size="12" font-weight="600">worker-4 — research Mistral pricing</text>
+  <text x="30" y="270" fill="#22c55e" font-family="Menlo,monospace" font-size="12">✓ start touched  ·  3 min ago</text>
+  <text x="30" y="295" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">## Mistral (in progress)</text>
+  <text x="30" y="313" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">  - scraping docs.mistral.ai ...</text>
+  <text x="30" y="338" fill="#f59e0b" font-family="Menlo,monospace" font-size="12">⏳ final not yet touched</text>
+</svg>

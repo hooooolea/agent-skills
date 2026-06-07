@@ -55,8 +55,20 @@ Three steps to get all 3 skills running on any agent:
 ## Skills
 
 - **[blocks](skills/agentic/blocks/SKILL.md)** — 一个 tmux 窗口跑 N 个并行 AI agent（Manager + Workers 协调跑多步任务）
+
+  | Manager (current chat) | worker-1 (start → work → append) |
+  |:---:|:---:|
+  | ![](assets/blocks-pane-1.svg) | ![](assets/blocks-pane-2.svg) |
+  | **worker-2 (in progress, 30%)** | **worker-3 done / worker-4 running** |
+  | ![](assets/blocks-pane-3.svg) | ![](assets/blocks-pane-4.svg) |
+
 - **[dev-task](skills/productivity/dev-task/SKILL.md)** — 多子代理开发流（5-phase: 拆任务→探索→编码→审查→收尾）
+
+  ![](assets/dev-task.svg)
+
 - **[session-summary](skills/productivity/session-summary/SKILL.md)** — session 结束前存个档，下次接着干
+
+  ![](assets/session-summary.svg)
 
 ## When NOT to use
 

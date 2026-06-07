@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 280" width="1000" height="280">
+  <rect width="1000" height="280" fill="#0f1115"/>
+  <text x="30" y="36" fill="#e5e7eb" font-family="Menlo,monospace" font-size="20" font-weight="700">dev-task — 5-phase dev workflow (Phase 3 review is mandatory)</text>
+  <text x="30" y="58" fill="#9ca3af" font-family="Menlo,monospace" font-size="12">main agent hand-copies context between phases · 3 sub-agents context-isolated</text>
+
+  <!-- Phase boxes (5 horizontal) -->
+  <g font-family="Menlo,monospace" font-size="13">
+    <rect x="30"  y="100" width="170" height="80" fill="#1a1d24" rx="6" stroke="#2a2f38"/>
+    <text x="115" y="130" fill="#e5e7eb" text-anchor="middle" font-weight="700">Phase 0</text>
+    <text x="115" y="150" fill="#9ca3af" text-anchor="middle" font-size="11">拆任务</text>
+    <text x="115" y="166" fill="#f59e0b" text-anchor="middle" font-size="10">todo + clarify</text>
+
+    <rect x="220" y="100" width="170" height="80" fill="#1a1d24" rx="6" stroke="#2a2f38"/>
+    <text x="305" y="130" fill="#e5e7eb" text-anchor="middle" font-weight="700">Phase 1</text>
+    <text x="305" y="150" fill="#9ca3af" text-anchor="middle" font-size="11">探索</text>
+    <text x="305" y="166" fill="#f59e0b" text-anchor="middle" font-size="10">read_file + search</text>
+
+    <rect x="410" y="100" width="170" height="80" fill="#1a1d24" rx="6" stroke="#2a2f38"/>
+    <text x="495" y="130" fill="#e5e7eb" text-anchor="middle" font-weight="700">Phase 2</text>
+    <text x="495" y="150" fill="#9ca3af" text-anchor="middle" font-size="11">编码</text>
+    <text x="495" y="166" fill="#f59e0b" text-anchor="middle" font-size="10">write + patch</text>
+
+    <rect x="600" y="92" width="170" height="96" fill="#1a1d24" rx="6" stroke="#f59e0b" stroke-width="2"/>
+    <text x="685" y="124" fill="#f59e0b" text-anchor="middle" font-weight="700">Phase 3  ★</text>
+    <text x="685" y="146" fill="#e5e7eb" text-anchor="middle" font-size="11">审查 (必跑)</text>
+    <text x="685" y="164" fill="#f59e0b" text-anchor="middle" font-size="10">delegate_task</text>
+    <text x="685" y="180" fill="#22c55e" text-anchor="middle" font-size="10">PASS/WARN/FAIL</text>
+
+    <rect x="790" y="100" width="180" height="80" fill="#1a1d24" rx="6" stroke="#2a2f38"/>
+    <text x="880" y="130" fill="#e5e7eb" text-anchor="middle" font-weight="700">Phase 4</text>
+    <text x="880" y="150" fill="#9ca3af" text-anchor="middle" font-size="11">收尾</text>
+    <text x="880" y="166" fill="#f59e0b" text-anchor="middle" font-size="10">git + 文档</text>
+  </g>
+
+  <!-- Arrows between phases -->
+  <g stroke="#2a2f38" stroke-width="1.5" fill="none">
+    <line x1="200" y1="140" x2="220" y2="140"/>
+    <line x1="390" y1="140" x2="410" y2="140"/>
+    <line x1="580" y1="140" x2="600" y2="140"/>
+    <line x1="770" y1="140" x2="790" y2="140"/>
+  </g>
+  <g fill="#9ca3af" font-family="Menlo,monospace" font-size="10">
+    <text x="210" y="135" text-anchor="middle">→</text>
+    <text x="400" y="135" text-anchor="middle">→</text>
+    <text x="590" y="135" text-anchor="middle">→</text>
+    <text x="780" y="135" text-anchor="middle">→</text>
+  </g>
+
+  <!-- Bottom legend -->
+  <text x="30" y="220" fill="#9ca3af" font-family="Menlo,monospace" font-size="11">★ Phase 3 = sub-agent (delegate_task), independent context. Emits verdict → Phase 4 handles FAIL.</text>
+  <text x="30" y="240" fill="#9ca3af" font-family="Menlo,monospace" font-size="11">Limits: ≤ 20 files, ≤ 1000 lines, &lt; 1 week scope. Exceeded → [SCOPE_TOO_LARGE] exit.</text>
+  <text x="30" y="265" fill="#f59e0b" font-family="Menlo,monospace" font-size="11">9-item DoD enforced at Phase 0 + Phase 4</text>
+</svg>
