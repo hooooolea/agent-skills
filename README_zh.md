@@ -82,23 +82,6 @@ Issues / PRs 都欢迎. 改 SKILL.md 前先读 [agentskills.io spec](https://age
 
 每个 PR 触发 CI 跑 [check-skill-spec.py](https://github.com/hooooolea/hermes-agent/blob/main/skills/software-development/hermes-agent-skill-authoring/scripts/check-skill-spec.py): description ≤ 1024 chars, name 匹配父目录, body ≤ 500 行, 无 `or types /<name>` 触发.
 
-## Resources
-
-### 官方文档
-- [agentskills.io spec](https://agentskills.io/specification) — 开放标准本身
-- [Anthropic skills announcement](https://www.anthropic.com/news/skills) (2025-10) — 原始 writeup
-
-### 社区
-- [ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills) — 1000+ skills 精选列表
-- [Vercel `npx skills` CLI](https://github.com/vercel-labs/skills) — 跨 agent 安装 (50+ agents)
-- [SkillsMP.com](https://skillsmp.com) — 公开 GitHub SKILL.md auto-index
-
-### Inspiration
-- [Anthropic skills repo](https://github.com/anthropics/skills) — 示例 skills
-- [Lenny's Newsletter](https://www.lennysnewsletter.com/p/everyone-should-be-using-claude-code) — 50 个 agent 编码 use cases
-- [Notion Agent Skills](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0) — Notion 集成
-- [Top Agent Skills](https://composio.dev/content/top-claude-skills) — 社区 ranking
-
 ## Acknowledgments
 
 - [Anthropic](https://www.anthropic.com/) — 发布 SKILL.md 开放标准
