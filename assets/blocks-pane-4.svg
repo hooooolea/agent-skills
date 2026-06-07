@@ -2,22 +2,24 @@
   <rect width="520" height="400" fill="#0f1115"/>
   <text x="20" y="32" fill="#e5e7eb" font-family="Menlo,monospace" font-size="18" font-weight="700">worker-3 / worker-4 (combined view)</text>
 
-  <!-- worker-3 (top half) -->
-  <rect x="20" y="55" width="480" height="155" fill="#1a1d24" rx="6" stroke="#2a2f38"/>
-  <rect x="20" y="55" width="480" height="22" fill="#232830" rx="6"/>
-  <text x="80" y="71" fill="#f59e0b" font-family="Menlo,monospace" font-size="12" font-weight="600">worker-3 — research Google pricing</text>
-  <text x="30" y="100" fill="#22c55e" font-family="Menlo,monospace" font-size="12">✓ final touched  ·  30s ago</text>
-  <text x="30" y="125" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">## Google</text>
-  <text x="30" y="143" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">  - Gemini 2.5 Pro: $1.25 / $10 per 1M tok</text>
-  <text x="30" y="161" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">  - context: 1M (Pro), 1M (Flash)</text>
+  <!-- worker-3 (top, 165 high) — header 28 high to give ✓ clearance -->
+  <rect x="20" y="55" width="480" height="165" fill="#1a1d24" rx="6" stroke="#2a2f38"/>
+  <rect x="20" y="55" width="480" height="28" fill="#232830" rx="6"/>
+  <rect x="20" y="76" width="480" height="7" fill="#232830"/>
+  <text x="30" y="74" fill="#f59e0b" font-family="Menlo,monospace" font-size="13" font-weight="600">worker-3 — research Google pricing</text>
+  <!-- ✓ baseline y=110 = header bottom (83) + 27px, no overlap with header text baseline (74) -->
+  <text x="30" y="110" fill="#22c55e" font-family="Menlo,monospace" font-size="12">✓ final touched  ·  30s ago</text>
+  <text x="30" y="140" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">Gemini 2.5 Pro: $1.25 / $10 per 1M tok</text>
+  <text x="30" y="158" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">context: 1M (Pro), 1M (Flash)</text>
   <text x="30" y="186" fill="#9ca3af" font-family="Menlo,monospace" font-size="11">→ ready for Manager collection</text>
 
-  <!-- worker-4 (bottom half) -->
-  <rect x="20" y="225" width="480" height="155" fill="#1a1d24" rx="6" stroke="#2a2f38"/>
-  <rect x="20" y="225" width="480" height="22" fill="#232830" rx="6"/>
-  <text x="80" y="241" fill="#f59e0b" font-family="Menlo,monospace" font-size="12" font-weight="600">worker-4 — research Mistral pricing</text>
-  <text x="30" y="270" fill="#22c55e" font-family="Menlo,monospace" font-size="12">✓ start touched  ·  3 min ago</text>
-  <text x="30" y="295" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">## Mistral (in progress)</text>
-  <text x="30" y="313" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">  - scraping docs.mistral.ai ...</text>
-  <text x="30" y="338" fill="#f59e0b" font-family="Menlo,monospace" font-size="12">⏳ final not yet touched</text>
+  <!-- worker-4 (bottom, 165 high) — same header height for symmetry -->
+  <rect x="20" y="235" width="480" height="165" fill="#1a1d24" rx="6" stroke="#2a2f38"/>
+  <rect x="20" y="235" width="480" height="28" fill="#232830" rx="6"/>
+  <rect x="20" y="256" width="480" height="7" fill="#232830"/>
+  <text x="30" y="254" fill="#f59e0b" font-family="Menlo,monospace" font-size="13" font-weight="600">worker-4 — research Mistral pricing</text>
+  <!-- ✓ baseline y=290 = header bottom (263) + 27px -->
+  <text x="30" y="290" fill="#22c55e" font-family="Menlo,monospace" font-size="12">✓ start touched  ·  3 min ago</text>
+  <text x="30" y="320" fill="#e5e7eb" font-family="Menlo,monospace" font-size="11">scraping docs.mistral.ai ...</text>
+  <text x="30" y="350" fill="#f59e0b" font-family="Menlo,monospace" font-size="12">⏳ final not yet touched</text>
 </svg>
