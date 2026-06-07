@@ -60,14 +60,21 @@
 
 ## When NOT to use
 
-按 **错位** (用错场景) 和 **过剩** (用过度场景) 两类:
+3 个 skill 各自的边界:
 
-| 分类 | 场景 | 替代 |
-|------|------|------|
-| 错位 | 写 agent framework / runtime / SDK | `hermes-agent` / `claude-code` 本体的事 |
-| 过剩 | 一次性工作流 (不会重复 2 次) | ad-hoc prompt 更快 |
-| 错位 | 需要 GUI / IDE 集成 | skill 是纯文本, 等 spec 加 GUI 段位 |
-| 过剩 | 已有 > 1 年成熟工作流 | fork 维护成 private repo |
+### blocks
+- 1 task 1 agent 就够 → `"$AGENT_CMD" -q "..."` 更快
+- task < 5 min → Manager + N workers 的 overhead 太大
+- 没 parallelizable 子任务 → 不用 N 个 worker 跑
+
+### dev-task
+- 改动 < 50 行 (单文件 trivial fix) → 直接改
+- 不是 coding task (调研 / 写文档) → ad-hoc prompt 或 session-summary 收尾
+- 不在 git repo (没 manifest) → 跑不了 (skill 强依赖 manifest)
+
+### session-summary
+- session < 30 min 简单任务 → 不用写, 自然结束
+- task 1-2 步就完 → 没东西可总结
 
 ## Contributing
 
