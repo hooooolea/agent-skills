@@ -10,17 +10,34 @@
 
 ## Quickstart
 
-Three steps from zero to 3 working skills:
+Three steps to get all 3 skills running on any agent:
 
-1. **Install** (works for any agent that supports the [SKILL.md open standard](https://agentskills.io/specification)):
+1. **Download the SKILL.md files** — clone the repo (or just download the 3 folders you want):
    ```bash
-   npx skills add hooooolea/agent-skills
+   # Option A: full repo (lets you read source, file issues, send PRs)
+   git clone https://github.com/hooooolea/agent-skills ~/agent-skills
+
+   # Option B: tarball only (no git, smallest)
+   curl -fsSL https://github.com/hooooolea/agent-skills/archive/refs/heads/main.tar.gz | tar xz
    ```
-   Or skip `npx` and copy manually — see [手动安装](#手动安装不用-npx-skills) below.
 
-2. **Pick your agent** — `npx skills` auto-detects Claude Code / Codex / Cursor. For Hermes (or any unsupported agent):
+2. **Copy into your agent's skills directory**:
+
+   | Agent | Path | Layout |
+   |-------|------|--------|
+   | Hermes | `~/.hermes/skills/` | flat: `<name>/SKILL.md` |
+   | Claude Code | `~/.claude/skills/` | needs `<category>/<name>/` subdir |
+   | Codex | `~/.codex/skills/` | flat: `<name>/SKILL.md` |
+   | Aider | per-repo `.aider/skills/` | flat: `<name>/SKILL.md` |
+
    ```bash
-   cp -r skills/* ~/.hermes/skills/
+   # Hermes / Codex / Aider (flat)
+   cp -r ~/agent-skills/skills/* ~/.hermes/skills/    # or ~/.codex/skills/
+
+   # Claude Code (category subdir required)
+   cp -r ~/agent-skills/skills/agentic/blocks         ~/.claude/skills/blocks
+   cp -r ~/agent-skills/skills/productivity/dev-task  ~/.claude/skills/dev-task
+   cp -r ~/agent-skills/skills/productivity/session-summary ~/.claude/skills/session-summary
    ```
 
 3. **Restart your agent**, then in chat say one of:
@@ -28,11 +45,44 @@ Three steps from zero to 3 working skills:
    - "实现 / 开发 / 改代码" → triggers `dev-task`
    - "session 收尾 / 存个档" → triggers `session-summary`
 
-## 为什么
+> 💡 **Don't want to copy manually?** Vercel's [`npx skills add hooooolea/agent-skills`](https://github.com/vercel-labs/skills) CLI does the clone + cp + agent-detection for you (50+ agents supported). But it's a wrapper, not a requirement — the SKILL.md open standard works without any tooling.
 
-每个 AI agent 都有长尾的"重复工作流"——这些工作流被埋在每次对话里，靠 prompt 临时拼装。SKILL.md 开放标准（Anthropic 2025-12 发布，OpenAI / Cursor 共同采纳）让任何 agent 自动加载 `~/.{agent}/skills/<name>/SKILL.md`，把可复用工作流沉淀成可版本控制的 Markdown。
+## What Are Claude Skills?
 
-本仓库是按这个标准写成的 3 个 skill 集合。
+A Skill is a folder containing a `SKILL.md` Markdown file with YAML frontmatter. [Anthropic released the spec in October 2025](https://www.anthropic.com/news/skills) and open-sourced it in December 2025; Claude Code, Claude.ai, the Claude API, OpenAI Codex, Cursor, Gemini CLI, Antigravity, Windsurf, and 50+ other agents support it today.
+
+### Folder structure
+
+```
+skill-name/
+├── SKILL.md          # Required: name + description frontmatter + Markdown body
+├── scripts/          # Optional: helper shell / python
+├── templates/        # Optional: starter files
+└── references/       # Optional: detailed docs loaded on demand
+```
+
+### How it works: progressive disclosure
+
+Skills load in 3 tiers so a single agent can host hundreds of skills without blowing its context window:
+
+| When | What loads | Token cost |
+|------|------------|------------|
+| Session start | Every skill's `name` + `description` (frontmatter only) | ~100 tokens × N |
+| Agent decides a skill is relevant | That skill's full `SKILL.md` body | ≤ 5000 tokens, 1 skill |
+| Body links to `references/<file>.md` | Just the linked reference | on-demand |
+
+### How it compares
+
+| Approach | Spec | Runtime | Portable across agents |
+|---------|------|---------|------------------------|
+| **SKILL.md** (this repo) | Open standard | None (pure Markdown) | ✅ 50+ agents |
+| MCP server | Open standard | Need to run a server | ✅ MCP clients |
+| function calling | Vendor-specific | Need to ship code | ❌ per agent |
+| system prompt stuffing | None | None | ❌ context explodes past 10 skills |
+
+### This repo
+
+Three skills written to this spec: [blocks](skills/agentic/blocks/SKILL.md) (multi-agent coordination in tmux) · [dev-task](skills/productivity/dev-task/SKILL.md) (multi-subagent dev workflow) · [session-summary](skills/productivity/session-summary/SKILL.md) (session handoff).
 
 ![blocks 2x2 — Manager + 4 workers in one tmux window](assets/blocks-2x2.svg)
 
@@ -49,31 +99,6 @@ Three steps from zero to 3 working skills:
 - **[blocks](skills/agentic/blocks/SKILL.md)** — 一个 tmux 窗口跑 N 个并行 AI agent（Manager + Workers 协调跑多步任务）
 - **[dev-task](skills/productivity/dev-task/SKILL.md)** — 多子代理开发流（5-phase: 拆任务→探索→编码→审查→收尾）
 - **[session-summary](skills/productivity/session-summary/SKILL.md)** — session 结束前存个档，下次接着干
-
-## 手动安装（不用 `npx skills`）
-
-把 SKILL.md 复制到你的 agent 的 skills 目录，重启 agent：
-
-| Agent | 路径 |
-|-------|------|
-| Hermes | `~/.hermes/skills/<name>/` |
-| Claude Code | `~/.claude/skills/<name>/` |
-| Codex | `~/.codex/skills/<name>/` |
-| Aider | per-repo `.aider/skills/<name>/` |
-
-```bash
-# Hermes
-cp -r skills/* ~/.hermes/skills/
-
-# Claude Code (requires <category>/<name>/ subdir)
-cp -r skills/agentic/blocks ~/.claude/skills/blocks
-cp -r skills/productivity/dev-task ~/.claude/skills/dev-task
-cp -r skills/productivity/session-summary ~/.claude/skills/session-summary
-
-# Codex / Aider: see skills/agentic/blocks/references/agent-compatibility.md
-```
-
-跨 agent 差异（profile flag、worktree、slash-command 注册路径）见 [`skills/agentic/blocks/references/agent-compatibility.md`](skills/agentic/blocks/references/agent-compatibility.md)。
 
 ## When NOT to use
 
@@ -102,6 +127,8 @@ Issues / PRs 都欢迎。改 SKILL.md 前先读 [agentskills.io spec](https://ag
 ### Inspiration
 - [Anthropic skills repo](https://github.com/anthropics/skills) — example skills
 - [Lenny's Newsletter](https://www.lennysnewsletter.com/p/everyone-should-be-using-claude-code) — 50 Claude Code use cases
+- [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0) — Notion integration
+- [Top Claude Skills](https://composio.dev/content/top-claude-skills) — community ranking
 
 ## Acknowledgments
 
