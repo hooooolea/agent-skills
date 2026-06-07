@@ -47,9 +47,9 @@ Three steps to get all 3 skills running on any agent:
 
 > 💡 **Don't want to copy manually?** Vercel's [`npx skills add hooooolea/agent-skills`](https://github.com/vercel-labs/skills) CLI does the clone + cp + agent-detection for you (50+ agents supported). But it's a wrapper, not a requirement — the SKILL.md open standard works without any tooling.
 
-## What Are Claude Skills?
+## What Are Agent Skills?
 
-A Skill is a folder containing a `SKILL.md` Markdown file with YAML frontmatter. [Anthropic released the spec in October 2025](https://www.anthropic.com/news/skills) and open-sourced it in December 2025; Claude Code, Claude.ai, the Claude API, OpenAI Codex, Cursor, Gemini CLI, Antigravity, Windsurf, and 50+ other agents support it today.
+A Skill is a folder containing a `SKILL.md` Markdown file with YAML frontmatter. [Anthropic released the spec in October 2025](https://www.anthropic.com/news/skills) and open-sourced it in December 2025; Claude Code, OpenAI Codex, Cursor, Gemini CLI, Hermes, Antigravity, Windsurf, and 50+ other agents support it today.
 
 ### Folder structure
 
@@ -126,9 +126,9 @@ Issues / PRs 都欢迎。改 SKILL.md 前先读 [agentskills.io spec](https://ag
 
 ### Inspiration
 - [Anthropic skills repo](https://github.com/anthropics/skills) — example skills
-- [Lenny's Newsletter](https://www.lennysnewsletter.com/p/everyone-should-be-using-claude-code) — 50 Claude Code use cases
-- [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0) — Notion integration
-- [Top Claude Skills](https://composio.dev/content/top-claude-skills) — community ranking
+- [Lenny's Newsletter](https://www.lennysnewsletter.com/p/everyone-should-be-using-claude-code) — 50 agent coding use cases
+- [Notion Agent Skills](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0) — Notion integration
+- [Top Agent Skills](https://composio.dev/content/top-claude-skills) — community ranking
 
 ## Acknowledgments
 
