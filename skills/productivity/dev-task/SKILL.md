@@ -4,7 +4,7 @@ description: "Use when the user says '实现', '开发', '加功能', '改代码
 disable-model-invocation: true
 user-invocable: true
 license: MIT
-compatibility: "Designed for hermes (uses delegate_task, todo, terminal, write_file, patch, read_file, search_files, clarify). Cross-agent tool mapping table for claude code provided in body § 工具映射. Requires git and a project manifest (pom.xml / package.json / requirements.txt / go.mod / Cargo.toml)."
+compatibility: "Designed for hermes (uses delegate_task, todo, terminal, write_file, patch, read_file, search_files, clarify, web). Cross-agent tool mapping table for claude code provided in body § 工具映射. Requires git and a project manifest (pom.xml / package.json / requirements.txt / go.mod / Cargo.toml)."
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, Task
 metadata:
   version: "1.4.0"
@@ -287,6 +287,7 @@ Phase 3 审查发现 {N} 个 FAIL：
 | `Bash` | `terminal` | 跑命令 |
 | `Grep` / `Glob` | `search_files` | 搜内容/文件 |
 | `WebFetch` | `web` 工具集 | 抓网页 |
+| `AskUserQuestion` | `clarify` | 询问用户 |
 
 ---
 
@@ -451,7 +452,7 @@ This file uses Chinese headers for readability. English canonical equivalents pe
 | Pitfalls | ## 失败模式 | Common failure modes + USER_ABANDONED exit |
 | Verification | ## 完成定义 DoD | 9-item Definition of Done (硬指标) |
 
-When a cross-agent loader (Claude Code, Codex, Cursor) reads this file, the above Chinese headers carry the content; the English index is for spec compliance checking.
+When a cross-agent loader (Hermes, Claude Code) reads this file, the above Chinese headers carry the content; the English index is for spec compliance checking.
 
 ## Compatibility
 

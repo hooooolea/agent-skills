@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<!-- Source of truth: this file mirrors README.md (which is shown on GitHub). Edit README.md and re-sync. -->
+<!-- Source of truth: this file is a digest of README.md (Skills + install sections only). Edit README.md and re-sync this file. -->
 
 # Agent Skills
 
