@@ -1,4 +1,4 @@
-| English | [中文](README_zh.md)
+[English](README.md) | [中文](README_zh.md)
 
 # Agent Skills
 
@@ -6,13 +6,17 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![SKILL.md standard](https://img.shields.io/badge/standard-agentskills.io-f59e0b)](https://agentskills.io)
 
-**三个 SKILL.md，跨 Hermes / Claude Code / Codex / Aider。** 任何支持 [SKILL.md 开放标准](https://agentskills.io/specification) 的 agent 都能装。
+Three SKILL.md files implementing the open [SKILL.md standard](https://agentskills.io/specification). Install on any agent that supports it: Hermes, Claude Code, Codex, Aider.
+
+## Overview
+
+A small, focused library of three skills — `blocks`, `dev-task`, `session-summary` — each written once and installable on any agent that reads `SKILL.md`. No vendor lock-in, no runtime, no dependencies. The repository is the source of truth; everything is plain Markdown plus optional shell scripts.
 
 ## Quickstart
 
-Three steps to get all 3 skills running on any agent:
+Three steps to install all three skills on any agent:
 
-1. **Download the SKILL.md files** — clone the repo (or just download the 3 folders you want):
+1. **Download the SKILL.md files** — clone the repo (or just download the folders you want):
    ```bash
    # Option A: full repo (lets you read source, file issues, send PRs)
    git clone https://github.com/hooooolea/agent-skills ~/agent-skills
@@ -41,20 +45,20 @@ Three steps to get all 3 skills running on any agent:
    ```
 
 3. **Restart your agent**, then in chat say one of:
-   - "用 2x2 跑 4 个 agent 对比 X" → triggers `blocks`
-   - "实现 / 开发 / 改代码" → triggers `dev-task`
-   - "session 收尾 / 存个档" → triggers `session-summary`
+   - `用 2x2 跑 4 个 agent 对比 X` → triggers `blocks`
+   - `实现 / 开发 / 改代码` → triggers `dev-task`
+   - `session 收尾 / 存个档` → triggers `session-summary`
 
-> 💡 **Don't want to copy manually?** Vercel's [`npx skills add hooooolea/agent-skills`](https://github.com/vercel-labs/skills) CLI does the clone + cp + agent-detection for you (50+ agents supported). But it's a wrapper, not a requirement — the SKILL.md open standard works without any tooling.
+> 💡 **Don't want to copy manually?** Vercel's [`npx skills add hooooolea/agent-skills`](https://github.com/vercel-labs/skills) CLI handles clone + copy + agent detection for you (50+ agents supported). But it is a wrapper, not a requirement — the SKILL.md open standard works without any tooling.
 
-- **Open standard** — 按 [agentskills.io spec](https://agentskills.io/specification) 写, 不绑定任何 vendor
-- **零依赖** — 纯 Markdown + 可选 shell 脚本，无需 npm / pip
-- **小 footprint** — 每个 SKILL.md body ≤ 500 行 / ≤ 5000 tokens
-- **可发现** — 仓库结构兼容 Vercel `npx skills` CLI / SkillsMP.com auto-index
+- **Open standard** — Implements the [agentskills.io spec](https://agentskills.io/specification); not tied to any vendor.
+- **Zero dependencies** — Pure Markdown plus optional shell scripts; no npm or pip required.
+- **Small footprint** — Each SKILL.md body is at most 500 lines or 5000 tokens.
+- **Discoverable** — Repo structure works with Vercel `npx skills` CLI and SkillsMP.com auto-index.
 
 ## Skills
 
-- **[blocks](skills/agentic/blocks/SKILL.md)** — 一个 tmux 窗口跑 N 个并行 AI agent（Manager + Workers 协调跑多步任务）
+- **[blocks](skills/agentic/blocks/SKILL.md)** — Run N parallel AI agents in a single tmux window (Manager + Workers coordinate multi-step tasks).
 
   | Manager (current chat) | worker-1 (start → work → append) |
   |:---:|:---:|
@@ -62,55 +66,55 @@ Three steps to get all 3 skills running on any agent:
   | **worker-2 (in progress, 30%)** | **worker-3 done / worker-4 running** |
   | ![](assets/blocks-pane-3.svg) | ![](assets/blocks-pane-4.svg) |
 
-- **[dev-task](skills/productivity/dev-task/SKILL.md)** — 多子代理开发流（5-phase: 拆任务→探索→编码→审查→收尾）
+- **[dev-task](skills/productivity/dev-task/SKILL.md)** — Multi-sub-agent development flow (5 phases: decompose → explore → code → review → ship).
 
   ![](assets/dev-task.svg)
 
-- **[session-summary](skills/productivity/session-summary/SKILL.md)** — session 结束前存个档，下次接着干
+- **[session-summary](skills/productivity/session-summary/SKILL.md)** — Save session state at the end so the next one can pick up where you left off.
 
   ![](assets/session-summary.svg)
 
 ## When NOT to use
 
-3 个 skill 各自的边界:
+Per-skill boundaries:
 
 ### blocks
-- 1 task 1 agent 就够 → `"$AGENT_CMD" -q "..."` 更快
-- task < 5 min → Manager + N workers 的 overhead 太大
-- 没 parallelizable 子任务 → 不用 N 个 worker 跑
+- 1 task, 1 agent is enough → `"$AGENT_CMD" -q "..."` is faster.
+- Task < 5 min → Manager + N workers overhead is too high.
+- No parallelizable sub-tasks → no reason to spin up N workers.
 
 ### dev-task
-- 改动 < 50 行 (单文件 trivial fix) → 直接改
-- 不是 coding task (调研 / 写文档) → ad-hoc prompt 或 session-summary 收尾
-- 不在 git repo (没 manifest) → 跑不了 (skill 强依赖 manifest)
+- Change < 50 lines (single-file trivial fix) → just edit directly.
+- Not a coding task (research / doc writing) → use ad-hoc prompt or wrap with session-summary.
+- Not inside a git repo (no manifest) → cannot run (skill depends on manifest).
 
 ### session-summary
-- session < 30 min 简单任务 → 不用写, 自然结束
-- task 1-2 步就完 → 没东西可总结
+- Session < 30 min, trivial task → skip; end naturally.
+- Task is 1-2 steps → nothing worth summarising.
 
 ## Contributing
 
-Issues / PRs 都欢迎。改 SKILL.md 前先读 [agentskills.io spec](https://agentskills.io/specification)。跨 agent 兼容性的差异点统一在 [agent-compatibility.md](skills/agentic/blocks/references/agent-compatibility.md) 维护。
+Issues and PRs welcome. Before editing a SKILL.md, read the [agentskills.io spec](https://agentskills.io/specification). Cross-agent compatibility differences are tracked centrally in [agent-compatibility.md](skills/agentic/blocks/references/agent-compatibility.md).
 
-每个 PR 触发 CI 跑 [check-skill-spec.py](https://github.com/hooooolea/hermes-agent/blob/main/skills/software-development/hermes-agent-skill-authoring/scripts/check-skill-spec.py)：description ≤ 1024 chars、name 匹配父目录、body ≤ 500 行、无 `or types /<name>` 触发。
+Every PR triggers CI to run [check-skill-spec.py](https://github.com/hooooolea/hermes-agent/blob/main/skills/software-development/hermes-agent-skill-authoring/scripts/check-skill-spec.py): description ≤ 1024 chars, name matches parent directory, body ≤ 500 lines, no `or types /<name>` triggers.
 
 ## Acknowledgments
 
-- [Anthropic](https://www.anthropic.com/) — published the SKILL.md open standard
-- [Vercel](https://vercel.com/) — `npx skills` CLI cross-agent install
-- [ComposioHQ](https://github.com/ComposioHQ/awesome-claude-skills) — community curation
-- [SkillsMP](https://skillsmp.com) — auto-index of public SKILL.md
+- [Anthropic](https://www.anthropic.com/) — published the SKILL.md open standard.
+- [Vercel](https://vercel.com/) — `npx skills` CLI for cross-agent install.
+- [ComposioHQ](https://github.com/ComposioHQ/awesome-claude-skills) — community skill curation.
+- [SkillsMP](https://skillsmp.com) — auto-index of public SKILL.md files.
 
 ## Community
 
-没 Discord — 用 GitHub Issues / Discussions 凑合：
-- [Issues](https://github.com/hooooolea/agent-skills/issues) — bug / feature request
-- [Discussions](https://github.com/hooooolea/agent-skills/discussions) — Q&A / 想法
+No Discord — GitHub Issues / Discussions is the channel:
+- [Issues](https://github.com/hooooolea/agent-skills/issues) — bug / feature request.
+- [Discussions](https://github.com/hooooolea/agent-skills/discussions) — Q&A / ideas.
 
 ## Live site
 
-GitHub Pages 镜像：<https://hooooolea.github.io/agent-skills/>
+GitHub Pages mirror: <https://hooooolea.github.io/agent-skills/>
 
----
+## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
