@@ -60,11 +60,7 @@
 
 - **[blocks](skills/agentic/blocks/SKILL.md)** — 一个 tmux 窗口跑 N 个并行 AI agent（Manager + Workers 协调多步任务）。
 
-  | Manager（当前对话） | worker-1（start → work → append） |
-  |:---:|:---:|
-  | ![](assets/blocks-pane-1.svg) | ![](assets/blocks-pane-2.svg) |
-  | **worker-2（进行中，30%）** | **worker-3 完成 / worker-4 运行中** |
-  | ![](assets/blocks-pane-3.svg) | ![](assets/blocks-pane-4.svg) |
+  ![Blocks 跑起来：一个 2x2 网格，4 个 pane 分别跑 Manager + worker-1..4](assets/blocks-running.png)
 
 - **[dev-task](skills/productivity/dev-task/SKILL.md)** — 多子代理开发流（5 阶段：拆任务 → 探索 → 编码 → 审查 → 收尾）。
 

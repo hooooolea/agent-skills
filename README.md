@@ -60,11 +60,7 @@ Three steps to install all three skills on any agent:
 
 - **[blocks](skills/agentic/blocks/SKILL.md)** — Run N parallel AI agents in a single tmux window (Manager + Workers coordinate multi-step tasks).
 
-  | Manager (current chat) | worker-1 (start → work → append) |
-  |:---:|:---:|
-  | ![](assets/blocks-pane-1.svg) | ![](assets/blocks-pane-2.svg) |
-  | **worker-2 (in progress, 30%)** | **worker-3 done / worker-4 running** |
-  | ![](assets/blocks-pane-3.svg) | ![](assets/blocks-pane-4.svg) |
+  ![Blocks running: a 2x2 grid of 4 panes with Manager + worker-1..4 coordination](assets/blocks-running.png)
 
 - **[dev-task](skills/productivity/dev-task/SKILL.md)** — Multi-sub-agent development flow (5 phases: decompose → explore → code → review → ship).
 
