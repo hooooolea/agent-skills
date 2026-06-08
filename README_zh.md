@@ -49,7 +49,7 @@
    - 「实现 / 开发 / 改代码」→ 触发 `dev-task`
    - 「session 收尾 / 存个档」→ 触发 `session-summary`
 
-> 💡 **不想手动复制？** Vercel 的 [`npx skills add hooooolea/agent-skills`](https://github.com/vercel-labs/skills) CLI 自动帮你 git clone + cp + 检测 agent（支持 50+ agents）。但它只是 wrapper，不是必须 —— SKILL.md 开放标准不需要任何工具就能跑。
+> 💡 **不想手动复制？** Vercel 的 [`npx skills add hooooolea/agent-skills`](https://github.com/vercel-labs/skills) CLI 自动帮你 git clone + cp + 检测 agent（支持 50+ agents）。但它只是 wrapper，不是必须 — SKILL.md 开放标准不需要任何工具就能跑。
 
 - **开放标准** — 按 [agentskills.io spec](https://agentskills.io/specification) 编写，不绑定任何 vendor。
 - **零依赖** — 纯 Markdown 加可选 shell 脚本，无需 npm 或 pip。
@@ -103,7 +103,7 @@ Issues 和 PRs 都欢迎。改 SKILL.md 前先读 [agentskills.io spec](https://
 
 ## Community
 
-没有 Discord —— 用 GitHub Issues / Discussions 凑合：
+没有 Discord — 用 GitHub Issues / Discussions 凑合：
 
 - [Issues](https://github.com/hooooolea/agent-skills/issues) — bug / feature request。
 - [Discussions](https://github.com/hooooolea/agent-skills/discussions) — Q&A / 想法。
@@ -114,4 +114,4 @@ GitHub Pages 镜像：<https://hooooolea.github.io/agent-skills/>
 
 ## License
 
-MIT —— 见 [LICENSE](LICENSE)。
+MIT — 见 [LICENSE](LICENSE)。
