@@ -30,6 +30,17 @@ Skip for:
 
 ## Quickstart
 
+**Prerequisite**: pick your agent CLI before spawning. `AGENT_CMD` has no default — blocks is agent-agnostic, so you must set it explicitly:
+
+```bash
+AGENT_CMD=hermes bash <spawn-script>.sh   # Hermes
+AGENT_CMD=claude bash <spawn-script>.sh   # Claude Code
+AGENT_CMD=codex  bash <spawn-script>.sh   # Codex
+AGENT_CMD=aider  bash <spawn-script>.sh   # Aider
+```
+
+If `AGENT_CMD` is unset, the spawn script errors out with a helpful message instead of silently sending empty Enter to all N panes (which is what would fail with `zsh: command not found: ...`). See `references/pitfalls.md` for the full symptom.
+
 From zero to N parallel agent panes in 3 steps:
 
 1. **Install** (any agent that supports the SKILL.md open standard):

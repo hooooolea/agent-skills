@@ -4,11 +4,22 @@
 
 The 4 most common spawn patterns, self-contained. **An agent invoking blocks should pick one of these, copy it verbatim into a `terminal` tool call, and run.** The detailed Recipes below explain the why behind each step.
 
-> Set `AGENT_CMD=claude` (or `codex`/`aider`) to use a different agent CLI. Default is `hermes`. Set `BLOCKS_TMUX_SESSION=my-name` to override the auto-generated session name. Set `BLOCKS_WORKERS=N` (manager mode) to override the default 4.
+> `AGENT_CMD` **must be set explicitly** — blocks is agent-agnostic, there is **no default**. Run any recipe with `AGENT_CMD=hermes|claude|codex|aider bash <recipe>.sh`, or the recipe will error out before spawning. Other vars: `BLOCKS_TMUX_SESSION=my-name` overrides the auto-generated session name; `BLOCKS_WORKERS=N` (manager mode) overrides the default 4.
 
 ### A. 2x2 flat (4 panes, no coordination)
 
 ```bash
+# Required: AGENT_CMD must be set (blocks is agent-agnostic; no default)
+if [ -z "${AGENT_CMD:-}" ]; then
+  echo "ERROR: AGENT_CMD is unset. Pick one before spawning:" >&2
+  echo "  AGENT_CMD=hermes bash <recipe>.sh   # Hermes" >&2
+  echo "  AGENT_CMD=claude bash <recipe>.sh   # Claude Code" >&2
+  echo "  AGENT_CMD=codex  bash <recipe>.sh   # Codex" >&2
+  echo "  AGENT_CMD=aider  bash <recipe>.sh   # Aider" >&2
+  echo "See blocks/SKILL.md ## Quickstart for context." >&2
+  exit 1
+fi
+
 SESSION="${BLOCKS_TMUX_SESSION:-blocks-2x2-$(date +%H%M%S)}"
 tmux new-session -d -s "$SESSION" -x 220 -y 50
 tmux split-window -h  -t "$SESSION":1
@@ -23,6 +34,17 @@ sleep 6 && tmux attach -t "$SESSION"
 ### B. 2x1 flat (2 panes, side by side)
 
 ```bash
+# Required: AGENT_CMD must be set (blocks is agent-agnostic; no default)
+if [ -z "${AGENT_CMD:-}" ]; then
+  echo "ERROR: AGENT_CMD is unset. Pick one before spawning:" >&2
+  echo "  AGENT_CMD=hermes bash <recipe>.sh   # Hermes" >&2
+  echo "  AGENT_CMD=claude bash <recipe>.sh   # Claude Code" >&2
+  echo "  AGENT_CMD=codex  bash <recipe>.sh   # Codex" >&2
+  echo "  AGENT_CMD=aider  bash <recipe>.sh   # Aider" >&2
+  echo "See blocks/SKILL.md ## Quickstart for context." >&2
+  exit 1
+fi
+
 SESSION="${BLOCKS_TMUX_SESSION:-blocks-2-$(date +%H%M%S)}"
 tmux new-session -d -s "$SESSION" -x 200 -y 50
 tmux split-window -h -t "$SESSION":1
@@ -34,6 +56,17 @@ sleep 6 && tmux attach -t "$SESSION"
 ### C. 2x3 flat (6 panes, 3 cols × 2 rows)
 
 ```bash
+# Required: AGENT_CMD must be set (blocks is agent-agnostic; no default)
+if [ -z "${AGENT_CMD:-}" ]; then
+  echo "ERROR: AGENT_CMD is unset. Pick one before spawning:" >&2
+  echo "  AGENT_CMD=hermes bash <recipe>.sh   # Hermes" >&2
+  echo "  AGENT_CMD=claude bash <recipe>.sh   # Claude Code" >&2
+  echo "  AGENT_CMD=codex  bash <recipe>.sh   # Codex" >&2
+  echo "  AGENT_CMD=aider  bash <recipe>.sh   # Aider" >&2
+  echo "See blocks/SKILL.md ## Quickstart for context." >&2
+  exit 1
+fi
+
 SESSION="${BLOCKS_TMUX_SESSION:-blocks-6-$(date +%H%M%S)}"
 tmux new-session -d -s "$SESSION" -x 300 -y 50
 tmux split-window -h -t "$SESSION":1
@@ -51,6 +84,16 @@ sleep 6 && tmux attach -t "$SESSION"
 
 ```bash
 N=${BLOCKS_WORKERS:-4}
+# Required: AGENT_CMD must be set (blocks is agent-agnostic; no default)
+if [ -z "${AGENT_CMD:-}" ]; then
+  echo "ERROR: AGENT_CMD is unset. Pick one before spawning:" >&2
+  echo "  AGENT_CMD=hermes bash <recipe>.sh   # Hermes" >&2
+  echo "  AGENT_CMD=claude bash <recipe>.sh   # Claude Code" >&2
+  echo "  AGENT_CMD=codex  bash <recipe>.sh   # Codex" >&2
+  echo "  AGENT_CMD=aider  bash <recipe>.sh   # Aider" >&2
+  echo "See blocks/SKILL.md ## Quickstart for context." >&2
+  exit 1
+fi
 SESSION="${BLOCKS_TMUX_SESSION:-blocks-mgr-$(date +%H%M%S)}"
 SHARED="$HOME/blocks-shared/$SESSION"
 mkdir -p "$SHARED"/{tasks,results,done}
@@ -111,7 +154,7 @@ tmux list-sessions -F '#{session_name}' | grep '^blocks-' | xargs -I {} tmux kil
      4|
      5|The 4 most common spawn patterns, self-contained. **An agent invoking blocks should pick one of these, copy it verbatim into a `terminal` tool call, and run.** The detailed Recipes below explain the why behind each step.
      6|
-     7|> Set `AGENT_CMD=claude` (or `codex`/`aider`) to use a different agent CLI. Default is `hermes`. Set `BLOCKS_TMUX_SESSION=my-name` to override the auto-generated session name. Set `BLOCKS_WORKERS=N` (manager mode) to override the default 4.
+     7|> `AGENT_CMD` **must be set explicitly** — blocks is agent-agnostic, there is **no default**. Run any recipe with `AGENT_CMD=hermes|claude|codex|aider bash <recipe>.sh`, or the recipe will error out before spawning. Other vars: `BLOCKS_TMUX_SESSION=my-name` overrides the auto-generated session name; `BLOCKS_WORKERS=N` (manager mode) overrides the default 4.
      8|
      9|### A. 2x2 flat (4 panes, no coordination)
     10|
