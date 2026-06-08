@@ -94,6 +94,8 @@ Issues and PRs welcome. Before editing a SKILL.md, read the [agentskills.io spec
 
 Every PR triggers CI to run [check-skill-spec.py](https://github.com/hooooolea/hermes-agent/blob/main/skills/software-development/hermes-agent-skill-authoring/scripts/check-skill-spec.py): description ≤ 1024 chars, name matches parent directory, body ≤ 500 lines, no `or types /<name>` triggers.
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contribution workflow.
+
 ## Acknowledgments
 
 - [Anthropic](https://www.anthropic.com/) — published the SKILL.md open standard.

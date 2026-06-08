@@ -94,6 +94,8 @@ Issues 和 PRs 都欢迎。改 SKILL.md 前先读 [agentskills.io spec](https://
 
 每个 PR 触发 CI 跑 [check-skill-spec.py](https://github.com/hooooolea/hermes-agent/blob/main/skills/software-development/hermes-agent-skill-authoring/scripts/check-skill-spec.py)：description ≤ 1024 chars、name 匹配父目录、body ≤ 500 行、无 `or types /<name>` 触发。
 
+详细贡献流程见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
 ## Acknowledgments
 
 - [Anthropic](https://www.anthropic.com/) — 发布 SKILL.md 开放标准。
