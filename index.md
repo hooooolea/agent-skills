@@ -10,7 +10,7 @@ layout: default
 
 - **blocks** — [SKILL.md](skills/agentic/blocks/SKILL.md) — 一个 tmux 窗口跑 N 个并行 AI agent（Manager + Workers 协调多步任务）
   ![blocks: a 2x2 grid of 4 panes with Manager + workers coordination](assets/blocks-running.png)
-- **dev-task** — [SKILL.md](skills/productivity/dev-task/SKILL.md) — 多子代理开发流
+- **dev-task** — [SKILL.md](skills/productivity/dev-task/SKILL.md) — 多子代理开发流（5 阶段：拆任务 → 探索 → 编码 → 审查 → 收尾）
   ![dev-task: 5-phase horizontal flow with Phase 3 review gate](assets/dev-task.svg)
 - **session-summary** — [SKILL.md](skills/productivity/session-summary/SKILL.md) — session 结束前存个档，下次接着干
   ![session-summary: 6-section .session_summary.md template](assets/session-summary.svg)
