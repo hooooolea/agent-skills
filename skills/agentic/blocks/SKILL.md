@@ -1,6 +1,6 @@
 ---
 name: blocks
-description: "Use when the user says 'blocks', '分块', '分屏', '2x2', '四宫格', '起N个worker', '分配N个员工', 'manager+workers'. Triggers: 'blocks 2x2', 'blocks 6', 'blocks --manager [--workers N]', '分配 N 个员工', '起 N 个 worker'. Spawns N parallel AI agent CLIs in one tmux window. N must be even (2/4/6/8). Two modes: flat (N isolated panes, default 2x2) or manager (current chat = Manager; N worker panes coordinate via files at ~/blocks-shared/<session>/{task,plan,tasks,results,done,summary}.md). Configurable: AGENT_CMD (default: hermes), AGENT_HOME (default: ~/.hermes). For per-agent CLI adaptation (claude / codex / aider), see references/agent-compatibility.md."
+description: "Use when the user says 'blocks', '分块', '分屏', '2x2', '四宫格', '起N个worker', '分配N个员工', 'manager+workers'. Triggers: 'blocks 2x2', 'blocks 6', 'blocks --manager [--workers N]', '分配 N 个员工', '起 N 个 worker'. Spawns N parallel AI agent CLIs in one tmux window. N must be even (2/4/6/8). Two modes: flat (N isolated panes, default 2x2) or manager (current chat = Manager; N worker panes coordinate via files at ~/blocks-shared/<session>/{task,plan,tasks,results,done,summary}.md). AGENT_CMD must be set explicitly — blocks is agent-agnostic (hermes / claude / codex / aider). For per-agent CLI adaptation, see references/agent-compatibility.md."
 disable-model-invocation: true
 user-invocable: true
 allowed-tools: Bash, Read
@@ -78,7 +78,7 @@ From zero to N parallel agent panes in 3 steps:
    new-session -x W -y H → split into N shells → resize-pane to equal size
    → send-keys "$AGENT_CMD" → sleep 6 → attach
    ```
-3. **Never `select-layout tiled` on 1+N (Manager+Workers) layouts** — it re-computes destructively. Safe (but unnecessary) on pure NxM grids if you've already resize-pane'd.
+3. **`select-layout tiled` on pure NxM grids: call it BEFORE `resize-pane`, not after.** On macOS tmux 3.x, `resize-pane` alone is unreliable (one pane collapses to 1 row). Always: splits → `select-layout tiled` → `resize-pane`. See `references/tmux-grid-bug.md`. **Never use `tiled` on 1+N (Manager+Workers) layouts** — it re-computes destructively.
 4. **`send-keys` race**: prompt_toolkit needs ~6s. Always `sleep 6` after `send-keys "$AGENT_CMD"` and before sending the role prompt.
 5. **Cap single-round work at 6 minutes** (hard 7). Detached macOS tmux servers can be reaped at 10+ min. See `references/tmux-ops.md` § Recovery.
 

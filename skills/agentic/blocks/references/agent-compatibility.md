@@ -2,7 +2,7 @@
 
 For each agent that works with blocks, the specific flags and mechanisms differ. This file documents the per-agent quirks so you can adapt `recipes.md` to your CLI.
 
-Use the default (hermes) if not specified. Override `AGENT_CMD` / `AGENT_HOME` env vars.
+Set `AGENT_CMD` explicitly before spawning — blocks is agent-agnostic and has no default. Override `AGENT_HOME` as needed.
 
 ## Quick reference
 

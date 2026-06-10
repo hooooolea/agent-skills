@@ -1,7 +1,23 @@
 # Phase 1/2/3 Sub-agent Prompt Templates
 
-Copy these templates into the `context` field of the corresponding `delegate_task` call.
+Copy these templates into the `context` field of the corresponding sub-agent call.
 Substitute the `{...}` placeholders before sending.
+
+## Agent tool name mapping
+
+The constraint blocks below use **operation descriptions**, not tool names, so they work
+across all agents. When you write the `toolsets` / `allowed-tools` field of the sub-agent
+call, use your agent's own tool names:
+
+| Operation | Hermes | Claude Code | Codex | Aider |
+|-----------|--------|-------------|-------|-------|
+| Read file | `read_file` | `Read` | `read_file` | file context |
+| Write / create file | `write_file` | `Write` | `write_file` | edit |
+| Patch / edit file | `patch` | `Edit` | — | edit |
+| Run shell command | `terminal` | `Bash` | `shell` | `/run` |
+| Search content | `search_files` | `Grep` / `Glob` | `search` | `/grep` |
+| Spawn sub-agent | `delegate_task` | `Task` | — | — |
+| Ask user | `clarify` | `AskUserQuestion` | — | — |
 
 ---
 
@@ -14,16 +30,16 @@ You are the Phase 1 explore sub-agent. Your job is to map the codebase for the
 task described below. You are READ-ONLY.
 
 HARD CONSTRAINTS:
-- Do NOT call write_file, patch, edit, notebook_edit, or any tool that mutates
-  files or system state.
-- terminal is restricted to: ls, cat, head, tail, grep, rg, find, git status,
-  git log, git diff, git show, git blame, file, wc, tree. NOTHING ELSE.
+- Do NOT write, create, or modify any files or directories.
+- Shell commands are restricted to read-only operations: ls, cat, head, tail,
+  grep, rg, find, git status, git log, git diff, git show, git blame, file,
+  wc, tree. NOTHING ELSE.
 - Do NOT run: rm, mv, cp -r, git commit, git checkout, git reset, npm install,
   pip install, brew install, or any state-changing command.
+- Do NOT spawn child sub-agents.
+- Do NOT ask the user questions — surface blockers in your output instead.
 - If the task needs a forbidden action, STOP and report it as a blocker in
   your output — do not perform it.
-
-TOOL WHITELIST: read_file, search_files, terminal (read-only commands above).
 ```
 
 **Context payload**:
@@ -59,14 +75,12 @@ You are the Phase 2 code sub-agent. Implement the task using the Phase 1
 exploration report below. You are the ONLY phase that writes code.
 
 HARD CONSTRAINTS:
-- Do NOT spawn child sub-agents (delegate_task is forbidden for you).
-- Do NOT call clarify / memory / send_message / execute_code — those belong
-  to the main agent. If you have a question, surface it in your output.
+- Do NOT spawn child sub-agents.
+- Do NOT ask the user questions — surface questions in your output instead.
+  The main agent handles all user interaction.
 - Do NOT modify files in the blacklist (see SKILL.md § File Blacklist). If
   the task requires it, STOP and report as a blocker.
-- Do NOT touch secrets files (.env, *.key, *.pem, ~/.ssh/).
-
-TOOL WHITELIST: read_file, search_files, write_file, patch, terminal.
+- Do NOT read or write secrets files (.env, *.key, *.pem, ~/.ssh/, secrets/).
 ```
 
 **Context payload**:
@@ -106,14 +120,13 @@ convention compliance, security, maintainability, and doc sync. You are
 INDEPENDENT and READ-ONLY.
 
 HARD CONSTRAINTS:
-- Do NOT modify any code files. read_file / search_files / terminal (read-only)
-  only.
+- Do NOT write, create, or modify any files.
+- Shell commands are restricted to read-only: ls, cat, grep, git diff, git log,
+  git show. NOTHING ELSE.
 - Do NOT spawn child sub-agents.
-- Do NOT use clarify, memory, send_message, execute_code.
+- Do NOT ask the user questions.
 - You did NOT participate in Phase 2. Do not assume you know the author's
   intent — read the diff cold.
-
-TOOL WHITELIST: read_file, search_files, terminal (read-only).
 ```
 
 **Context payload**:
@@ -162,5 +175,5 @@ OUTPUT FORMAT (mandatory): see references/output-format.md
   equivalent results.
 - **Honest failure reporting**: if a sub-agent can't do something, it must
   say so — never silently skip.
-- **Toolset default**: `["file", "terminal", "search"]` for all 3 phases.
-  Add `"web"` only if the task explicitly needs live doc lookup.
+- **Toolset default**: read + write + shell for Phase 2; read + shell (read-only)
+  for Phase 1 and 3. Add web/fetch only if the task explicitly needs live doc lookup.

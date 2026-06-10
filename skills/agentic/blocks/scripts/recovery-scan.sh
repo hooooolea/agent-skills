@@ -30,10 +30,10 @@ fi
 PROJECT_ROOT="$1"
 SESSION="$2"
 SHARED="$HOME/blocks-shared/$SESSION"
-# /tmp/blocks-mgr-session is written by the spawn recipe (Manager-mode activation message)
-# as a launch-timestamp marker. recovery-scan uses `find -newer` against it to identify
-# files modified during the session. Conflicts are harmless (last-write wins) but rename
-# to /tmp/blocks-mgr-session-$PID if running concurrent recovery scans.
+# /tmp/blocks-mgr-session is created by the spawn recipe via `touch /tmp/blocks-mgr-session`
+# immediately after mkdir of the shared directory. recovery-scan uses `find -newer` against
+# it to identify files modified during the session. Conflicts are harmless (last-write wins)
+# but rename to /tmp/blocks-mgr-session-$PID if running concurrent recovery scans.
 START_MARKER="/tmp/blocks-mgr-session"
 
 echo "=== Blocks Recovery Scan ==="

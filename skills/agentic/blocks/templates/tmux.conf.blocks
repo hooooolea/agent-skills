@@ -10,7 +10,8 @@ set -g mouse on
 
 # Pitfall 14: prompt_toolkit needs 256-color TERM
 set -g default-terminal "xterm-256color"
-set -ag default-terminal "screen-256color"
+# Enable True Color (24-bit) passthrough for terminals that support it
+set -ag terminal-overrides ",xterm-256color:Tc"
 
 # Larger scrollback (long worker output may need it)
 set -g history-limit 50000

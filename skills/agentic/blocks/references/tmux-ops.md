@@ -46,7 +46,7 @@ tmux send-keys -t "$SESSION":1.2 "continue" Enter
 
 The Manager (in your main chat) is also polling `$SHARED/done/` every ~60s and will see results. You don't need to monitor workers constantly — just check in if you're curious or if a worker looks stuck.
 
-**Tip:** `Ctrl-b `z` is the killer feature. Hit it on any pane to fullscreen that one worker's output, hit it again to return to the grid. Great for reading long error logs or big diffs.
+**Tip:** `Ctrl-b z` is the killer feature. Hit it on any pane to fullscreen that one worker's output, hit it again to return to the grid. Great for reading long error logs or big diffs.
 
 ### Auto-open: how it works
 

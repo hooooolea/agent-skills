@@ -5,7 +5,7 @@ disable-model-invocation: false
 user-invocable: true
 license: MIT
 compatibility: "Agent-agnostic. Writes only to `.session_summary.md` in the project root. Pure file I/O; no CLI binding."
-allowed-tools: Read, Write
+allowed-tools: Read, Write, Bash
 metadata:
   version: 1.0.0
   author: ejuer
@@ -60,7 +60,11 @@ Last Agent: [agent name and model]
 
 ## Pitfalls
 
-- **Writing to a subdirectory** — always `.session_summary.md` at the project root. If the working directory is a subdir (e.g. `packages/foo/`), write the file to the repo root, not the local cwd.
+- **Writing to a subdirectory** — always `.session_summary.md` at the project root. If the working directory is a subdir (e.g. `packages/foo/`), detect the repo root first:
+  ```bash
+  git rev-parse --show-toplevel 2>/dev/null || pwd
+  ```
+  Write to that path, not the local cwd. If there is no git repo (command fails), fall back to cwd and add a `Root: [absolute-path]` line below the timestamp in the file header so the next session can locate it.
 - **Including credentials** — even `[REDACTED]` for placeholders is fine; never the actual value. If the session needed `ANTHROPIC_API_KEY`, write that the env var is required and where to set it.
 - **Vague "next steps"** — "continue work" or "finish the rest" defeats the purpose. Specific file paths, line numbers, and what the next action is.
 - **Overwriting without reading** — if `.session_summary.md` already exists from a prior session, read it first to preserve continuity (e.g. open issues that span sessions).
@@ -70,14 +74,11 @@ Last Agent: [agent name and model]
 Before reporting done:
 - [ ] File path is exactly `.session_summary.md` at the project root
 - [ ] All 6 sections present: Project Overview / Current Active Work / Goal / Completed Actions / Next Steps / Known Issues
-- [ ] File paths are absolute (e.g. `/Users/...` not `./...`)
+- [ ] File paths use absolute paths where known; relative-to-project-root where absolute is unavailable
 - [ ] No actual API keys or tokens in the file
 - [ ] "Next Steps" item #1 is a single concrete action (not a list of options)
 
 ## Rules
 
-1. **Write to `.session_summary.md` in the project root.** Do not use any other filename.
-2. **Never write actual API keys or credentials.** If a key is needed, note that it's required and where to set it, but write `[REDACTED]` for the value.
-3. **Be specific with file paths.** Use absolute paths so the next session can find things immediately.
-4. **Prioritize next steps.** The first item should be what to do immediately upon resuming.
-5. **Keep it current.** Overwrite the file each time — don't append. The file should always represent the latest state.
+1. **Prioritize next steps.** The first item should be what to do immediately upon resuming — a single concrete action, not a list of options.
+2. **Keep it current.** Overwrite the file each time — don't append. The file should always represent the latest state.

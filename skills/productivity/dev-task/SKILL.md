@@ -4,8 +4,8 @@ description: "Use when the user says '实现', '开发', '加功能', '改代码
 disable-model-invocation: true
 user-invocable: true
 license: MIT
-compatibility: "Designed for hermes (uses delegate_task, todo, terminal, write_file, patch, read_file, search_files, clarify, web). Cross-agent tool mapping table for claude code provided in body § 工具映射. Requires git and a project manifest (pom.xml / package.json / requirements.txt / go.mod / Cargo.toml)."
-allowed-tools: Bash, Read, Write, Edit, Grep, Glob, Task
+compatibility: "Agent-agnostic. Sub-agent constraint blocks use operation descriptions (not tool names) — works across hermes, claude code, codex, aider. Cross-agent tool name mapping in body § 工具映射 and references/phase-prompts.md § Agent tool name mapping. Requires git and a project manifest (pom.xml / package.json / requirements.txt / go.mod / Cargo.toml)."
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob, Task, AskUserQuestion
 metadata:
   version: "1.4.0"
   author: ejuer
@@ -312,7 +312,7 @@ Phase 3 审查发现 {N} 个 FAIL：
 
 - 必须在 git 仓库（`git rev-parse --is-inside-work-tree` true）；不是 → 问用户 `git init` 还是退出
 - 必须有项目 manifest（pom.xml / package.json / requirements.txt / go.mod / Cargo.toml 之一）；缺 → 标 `[NO_MANIFEST]` 退出
-- 首次跑前主代理必须能定位"编译命令"；找不到 → 标 `[NO_BUILD_CMD]` 退出
+- 首次跑前主代理尝试定位"编译命令"；找不到 → 用 `clarify` 询问用户是否提供，或选择跳过编译检查（适用于文档/脚本类任务）；用户跳过则继续，用户无法提供则标 `[NO_BUILD_CMD]` 警告（不退出）
 
 ---
 
@@ -391,7 +391,7 @@ Phase 4 收尾前主代理**必须**逐条 check：
 | `[INPUT_TOO_VAGUE]` | $ARGUMENTS < 10 字符 | 退出，要求用户重写 |
 | `[SCOPE_TOO_LARGE]` | 文件 > 20 / 行 > 1000 / 涉及 5+ 模块 | 退出，要求用户拆小 |
 | `[NO_MANIFEST]` | 缺项目 manifest | 退出，提示用什么 init |
-| `[NO_BUILD_CMD]` | 找不到编译命令 | 退出，让用户指定 |
+| `[NO_BUILD_CMD]` | 找不到编译命令且用户选择跳过 | 警告（不退出），DoD 编译检查项标 N/A |
 | `[TIMEOUT]` | 子代理 600s 超时 | 标 [TIMEOUT]，问用户重跑 or 跳过 |
 | `[NO_CHANGE]` | Phase 2 子代理没改任何文件 | 重跑 1 次，再 0 改动则 [INCOMPLETE] 退出 |
 | `[FORMAT_FAIL]` | Phase 3 输出无 PASS/WARN/FAIL | 重跑 1 次强调格式，再失败则主代理手动审查 |
@@ -414,32 +414,24 @@ Phase 4 收尾前主代理**必须**逐条 check：
 | 3. 文档同步 | 全自动 | Phase 4.2 |
 | 4. 跑测试 / lint | 询问 | Phase 2.2 `clarify` |
 | 5. worktree 隔离 | 询问 | Phase 0.1 `clarify` |
-| **审核（Phase 3）** | **流程必备** | **必跑、不参与决策** |
+| 6. **审核（Phase 3）** | **流程必备** | **必跑、不参与决策** |
 | 7. 硬限制兜底 | 自动 | 上述错误处理表 |
 
 ---
 
 ## 何时加载 references
 
-- Phase 1 / 2 / 3 启动前：用 `skill_view(name="dev-task", file_path="references/phase-prompts.md")` 加载子代理 prompt 模板
-- Phase 3 启动前：还要加载 `references/output-format.md` 给审查子代理看格式
+Phase 1 / 2 / 3 启动前，先把 prompt 模板读入上下文，再组装子代理 context：
+
+| Agent | 操作 |
+|-------|------|
+| Hermes | `skill_view(name="dev-task", file_path="references/phase-prompts.md")` |
+| Claude Code | `Read` → `<skill-dir>/references/phase-prompts.md` |
+| Codex / Aider / 其他 | 直接读取 skill 目录下的 `references/phase-prompts.md` 文件 |
+
+Phase 3 启动前同理，还要加载 `references/output-format.md` 给审查子代理看输出格式。
 
 ---
-
-## 失败模式
-
-| 失败 | 处理 |
-|------|------|
-| Phase 1 子代理试图写文件 | 在最终汇报里标注，警告用户 |
-| Phase 2 子代理没改任何文件 | 重跑 Phase 2，明确说"必须输出 diff" |
-| Phase 3 子代理输出没有 PASS/WARN/FAIL 标签 | 重跑，强调格式 |
-| Phase 4 主代理改不了 FAIL | 标 [BLOCKED]，转人工 |
-| 用户在询问中选 C | 退出流程，把现状交还 |
-| 任务太大 / 模糊 | 回到 Phase 0，让用户拆小 |
-| 触发 SCOPE_TOO_LARGE / NO_CHANGE / DOD_FAIL | 按错误处理表执行 |
-| 触发 INPUT_TOO_VAGUE / NO_MANIFEST | 立即退出，提示用户 |
-| 用户连续选 C 3 次 | USER_ABANDONED 退出 |
-
 
 ## Canonical English index
 

@@ -70,11 +70,17 @@ When you see any of these, **execute the Recipe in your terminal tool**. The Rec
 │   ├── worker-2.md
 │   └── ...
 ├── done/
-│   ├── worker-1               # `touch` = worker-1 finished
-│   ├── worker-2
+│   ├── worker-1-start         # `touch` within 30s = liveness signal (pane received task)
+│   ├── worker-1-final         # `touch` when done = result is ready to read
+│   ├── worker-2-start
+│   ├── worker-2-final
 │   └── ...
 └── summary.md                 # Manager aggregates here when all done
 ```
+
+Two touch files per worker (see Pitfall 22 in pitfalls.md):
+- **`worker-N-start`**: touched within 30s of starting — proves the pane is alive and received the task. Without it, Manager assumes the worker never started.
+- **`worker-N-final`**: touched after writing the result — signals "I finished, read my output".
 
 **Why files, not tmux send-keys:** Manager is an LLM, not a deterministic controller. Telling it "use send-keys to dispatch tasks" makes the LLM responsible for tmux syntax, pane indexing, and race conditions. Files are simple, idempotent, inspectable, and survive Manager restarts. They also let the user inspect the system state at any time via `ls ~/blocks-shared/<session>/`.
 
