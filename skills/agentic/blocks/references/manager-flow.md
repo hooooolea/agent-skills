@@ -41,7 +41,7 @@ USER: "kill it"              →   `blocks kill` (or just tell user to
 **Triggers that activate Manager mode** (any of these in the user's message):
 
 - `blocks --manager` — default 4 workers
-- `blocks --manager --workers N` — N workers (N must be even, else round up)
+- `blocks --manager --workers N` — N workers (any N ≥ 1; odd/even both OK)
 - `blocks --manager --workers 6` — explicit N
 - `分配 4 个员工` / `分配 6 个员工` / `分配 N 个员工` — Chinese
 - `起 4 个 worker` / `起 N 个 worker` / `起 4 个 $AGENT_CMD` — Chinese variant
@@ -50,7 +50,7 @@ USER: "kill it"              →   `blocks kill` (or just tell user to
 
 When you see any of these, **execute the Recipe in your terminal tool**. The Recipe's last output is the "Manager mode activated" banner. After printing the banner, **you ARE the Manager** — from this point on, every user message is a task for the Manager role.
 
-> **Chunking hint (read this first):** the default 10-minute per-worker timeout is the *upper bound*, not a target. On macOS, fully-detached tmux servers can be reaped by launchd after 10+ minutes — see Pitfall 18. Split work into **6-minute rounds** (hard upper bound 7 min) with explicit `done/` signalling, and either attach to the tmux session after spawning (so launchd treats it as user-attached) or be ready to recover from the filesystem if it dies. See `references/tmux-server-recovery.md`.
+> **Chunking hint (read this first):** the default 10-minute per-worker timeout is the *upper bound*, not a target. On macOS, fully-detached tmux servers can be reaped by launchd after 10+ minutes — see Pitfall 18. Split work into **6-minute rounds** (hard upper bound 7 min) with explicit `done/` signalling, and either attach to the tmux session after spawning (so launchd treats it as user-attached) or be ready to recover from the filesystem if it dies. See `references/tmux-ops.md` § Recovery.
 
 **Critical: do NOT just describe the workflow as text.** You must actually `tmux new-session`, `tmux send-keys`, and `mkdir` etc. via the terminal tool. The Recipe has the exact bash. Run it, then become the Manager.
 
@@ -128,7 +128,7 @@ Your job:
 
 Timeout: **6-minute rounds** (hard upper bound 7 min) per worker. Longer windows (10+ min) risk the macOS
 server crashing mid-round, killing all workers with no recovery — see
-references/tmux-server-recovery.md and Pitfall 18. If `done/worker-N-start`
+`references/tmux-ops.md` § Recovery and Pitfall 18. If `done/worker-N-start`
 exists but `done/worker-N-final` is missing past 6 min, treat the worker as
 stalled. After timeout, report the stalled worker to the user and ask whether
 to continue waiting or proceed without them.

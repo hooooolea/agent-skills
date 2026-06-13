@@ -48,7 +48,7 @@ Add `tmux select-layout -t "$SESSION" tiled` **after** all splits, **before**
 the resize-pane loop:
 
 ```bash
-# 3. Build splits (N=2/4/6/8 cases as before)
+# 3. Build splits (horizontal chain → tiled, supports any N)
 tmux split-window -h -t "$SESSION":1
 tmux split-window -v -t "$SESSION":1.1
 tmux split-window -v -t "$SESSION":1.2
@@ -85,7 +85,7 @@ The "Never use tiled" advice is from pre-3.0 tmux. On macOS tmux 3.x:
   the running processes, just changes geometry).
 - `resize-pane` after `select-layout tiled` works correctly for fine
   adjustments to within 1 cell.
-- `resize-pane` **without** tiled is unreliable for N=2/4/6/8 splits
+- `resize-pane` **without** tiled is unreliable — always chain tiled → resize-pane
   because tmux won't move other panes' boundaries to make room.
 
 ## Verification

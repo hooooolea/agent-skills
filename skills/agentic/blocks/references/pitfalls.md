@@ -2,7 +2,7 @@ All 23 verified pitfalls. Numbers are stable — other docs in this skill refere
 
 ## Common Pitfalls
 
-1. **Odd N cannot be perfectly equalised** — `blocks 3` / `blocks 5` will give you one stretched pane because tiled can't tile an odd count in a grid. Round up to the next even number and warn the user. (See Even-Number Rule above.)
+1. **Odd N is fine — tiled handles it** — `blocks 3` / `blocks 5` / `blocks 7` all work. tiled arranges odd counts as an n+1 / n grid (e.g. 3 → top row 2, bottom 1; 5 → 3+2; 7 → 4+3). Panes in the incomplete row are the same size as the others — no stretching. For N ≥ 9, tiled produces a roughly square grid with the last row incomplete if needed. The "must be even" restriction is removed as of v1.11.0.
 
 2. **Splitting + starting agent in the same step** — the #1 cause of uneven layouts. Always split empty shells first, resize to equal, *then* `send-keys "$AGENT_CMD"`. prompt_toolkit's TUI interferes with tmux's split heuristics if it's running while you split.
 
@@ -36,17 +36,22 @@ All 23 verified pitfalls. Numbers are stable — other docs in this skill refere
 
 17. **`$AGENT_CMD` has no `--system-note` flag** — earlier drafts of this skill assumed a flag like `$AGENT_CMD --system-note '...'` could inject a role prompt at startup. It doesn't exist. The verified working pattern is: send `$AGENT_CMD` to the pane, wait 6s for prompt_toolkit to render, then send the role text as the first user message via `tmux send-keys -t "$SESSION":1.$i "You are ..." Enter`. The role then becomes the first entry in the conversation history, which the agent sees and obeys.
 
-18. **macOS tmux server crashes or gets reaped after ~10 minutes of detached running** — On macOS Sonoma/Sequoia, a `tmux new-session -d` session that holds 4 $AGENT_CMD workers (each compiling/running tests, doing heavy shell work) can crash the entire tmux server around the 10-11 minute mark. Symptoms: `tmux list-sessions` returns `no server running on /private/tmp/tmux-501/default`, all worker $AGENT_CMD subprocesses vanish, pane capture returns blank. `tmux capture-pane` and `tmux send-keys` both fail with "no server". The good news: file changes workers made have already been written to disk and survive the crash — only the panes are lost. See `references/tmux-server-recovery.md` for the full diagnosis and protocol. **Mitigations baked into the skill**:
+18. **macOS tmux server crashes or gets reaped after ~10 minutes of detached running** — On macOS Sonoma/Sequoia, a `tmux new-session -d` session that holds 4 $AGENT_CMD workers (each compiling/running tests, doing heavy shell work) can crash the entire tmux server around the 10-11 minute mark. Symptoms: `tmux list-sessions` returns `no server running on /private/tmp/tmux-501/default`, all worker $AGENT_CMD subprocesses vanish, pane capture returns blank. `tmux capture-pane` and `tmux send-keys` both fail with "no server". The good news: file changes workers made have already been written to disk and survive the crash — only the panes are lost. See `references/tmux-ops.md` § Recovery for the full salvage procedure. **Mitigations baked into the skill**:
     - Cap single-round task time at **6 minutes** (hard upper bound 7) — not the 10-min default
     - Workers must **`touch done-start` within 30s** of starting — that file is the only post-mortem signal that the worker received and began the task
     - Workers must **write incremental progress into `results/worker-N.md`** even before done-final — a worker that has already written a header + first finding to the result file gives the manager usable output even if the final touch is never reached
     - After spawning the session, attach to it (or open a `tmux attach` window). launchd is much less aggressive about reaping sessions with a live client.
     - If the manager needs more than 6 min of work per round, **split into multiple rounds** rather than extending the timeout
 
-19. **Worker should `touch $SHARED/done/worker-N` BEFORE writing `results/worker-N.md`, not after** — if the worker writes the result first, then crashes (or the tmux server dies) before touching `done/`, the manager polls forever and times out, even though the result file actually exists. The atomic signal must precede the (slow) result write.
-    **Fix:** in every task file's "completion protocol" section, write:
-    > **Order matters**: 1. start writing the result to `results/worker-N.md` (it can be partial — keep appending); 2. as soon as you begin, `touch $SHARED/done/worker-N`; 3. finish writing the result. The `done/` touch is the atomic signal — write it FIRST, refine the result AFTER. If you crash mid-write, the manager can still recover your partial result.
-    The Manager should also treat "result file exists with recent mtime but no `done/`" as a stalled worker and either nudge via `tmux send-keys` (if tmux is alive) or mark PARTIAL and read the result file directly (if tmux is dead).
+19. **Dual-touch ordering: touch `done/worker-N-start` FIRST (liveness), touch `done/worker-N-final` AFTER writing `results/worker-N.md` (completion)** — Pitfall 22 introduced dual-touch (`start` + `final`). The ordering is **different for each**:
+    - **`done/worker-N-start`**: touch FIRST (within 30s of reading the task). This is the liveness signal — if the pane crashes before doing any work, the manager knows the worker received the task.
+    - **`done/worker-N-final`**: touch AFTER writing the result. If the worker touches `final` before writing and then crashes, the manager reads an empty result and reports nothing. If the worker writes first, then crashes before touching `final`, the manager sees `start` exists → checks `results/worker-N.md` → recovers partial output.
+    **Correct order** (see `references/worker-execution-protocol.md`):
+    > 1. `touch done/worker-N-start` (atomic liveness)
+    > 2. Wait for task file, do the work
+    > 3. Write result to `results/worker-N.md`
+    > 4. `touch done/worker-N-final` (completion signal)
+    The Manager should treat "start exists but no final" as alive-and-working or crashed-mid-round, and check `results/worker-N.md` for partial output before timing out.
 
 20. **`resize-pane -x W -y H` after a fresh `split-window` is sometimes a no-op on macOS tmux** — one pane ends up 109x1 (squashed to 1 row) and the opposite pane takes 110x50 (the full column). This is a known tmux bug pattern when the second `split -v` is issued on a pane that has been re-balanced by a previous split.
     **Fix (verified working for 2xN pure grids):** after the splits, chain layout engines to force re-tiling:

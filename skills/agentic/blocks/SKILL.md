@@ -1,6 +1,6 @@
 ---
 name: blocks
-description: "Use when the user says 'blocks', '分块', '分屏', '2x2', '四宫格', '起N个worker', '分配N个员工', 'manager+workers'. Triggers: 'blocks 2x2', 'blocks 6', 'blocks --manager [--workers N]', '分配 N 个员工', '起 N 个 worker'. Spawns N parallel AI agent CLIs in one tmux window. N must be even (2/4/6/8). Two modes: flat (N isolated panes, default 2x2) or manager (current chat = Manager; N worker panes coordinate via files at ~/blocks-shared/<session>/{task,plan,tasks,results,done,summary}.md). AGENT_CMD must be set explicitly — blocks is agent-agnostic (hermes / claude / codex / aider). For per-agent CLI adaptation, see references/agent-compatibility.md."
+description: "Use when the user says 'blocks', '分块', '分屏', '2x2', '四宫格', '起N个worker', '分配N个员工', 'manager+workers'. Triggers: 'blocks N' (any number), 'blocks 2x2', 'blocks 6', 'blocks --manager [--workers N]', '分配 N 个员工', '起 N 个 worker'. Spawns N parallel AI agent CLIs in one tmux window. N can be any number 1-12 (odd or even — layout auto-adapts). Two modes: flat (N isolated panes) or manager (current chat = Manager; N worker panes coordinate via files at ~/blocks-shared/<session>/{task,plan,tasks,results,done,summary}.md). AGENT_CMD must be set explicitly — blocks is agent-agnostic (hermes / claude / codex / aider). For per-agent CLI adaptation, see references/agent-compatibility.md."
 disable-model-invocation: true
 user-invocable: true
 allowed-tools: Bash, Read
@@ -51,9 +51,10 @@ From zero to N parallel agent panes in 3 steps:
 
 2. **Spawn a flat grid** (N isolated panes, no coordination — each pane is its own agent session):
    ```bash
-   blocks 2x2
+   blocks 3    # any N ≥ 1 — 3, 5, 7, 9 all work
+   blocks 2x2  # or explicit grid
    ```
-   N must be even (2/4/6/8). 4 panes by default.
+   Defaults to 4. Layout auto-adapts: 3 → 2+1, 5 → 3+2, 7 → 4+3, etc.
 
 3. **Spawn Manager + Workers** (current chat = Manager; N workers coordinate via files at `~/blocks-shared/<session>/{task,plan,tasks,results,done,summary}.md`):
    ```bash
@@ -65,14 +66,14 @@ From zero to N parallel agent panes in 3 steps:
 
 | Mode | Trigger | What |
 |------|---------|------|
-| flat | `blocks 2x2`, `blocks 6` | N isolated agent panes, no coordination |
+| flat | `blocks N`, `blocks 2x2` | N isolated agent panes (any N ≥ 1), no coordination |
 | manager | `blocks --manager`, `分配 N 个员工` | Current chat = Manager; N worker panes coordinate via files |
 
 **Manager is the current chat, not a tmux pane.** User always talks to Manager in main chat; N workers live in tmux so the user can watch.
 
 ## Rules
 
-1. **N must be even (2/4/6/8).** Odd → one pane gets stretched. Round up + warn.
+1. **N can be any number 1-12.** Odd N (3, 5, 7, 9, 11) produces a grid where the last row has fewer panes — tiled arranges them evenly, no stretching. For N > 12, warn but don't block; the tiled layout still works.
 2. **Order of operations is load-bearing:**
    ```
    new-session -x W -y H → split into N shells → resize-pane to equal size
@@ -169,8 +170,8 @@ Full protocol with edge cases (DONE/PARTIAL/BLOCKED, multi-round, agent crash mi
 
 ## Verification
 
-- [ ] `tmux list-panes -t <session>` shows N panes (N even)
-- [ ] All panes within 1 cell of each other (`pane_width`/`pane_height`)
+- [ ] `tmux list-panes -t <session>` shows N panes
+- [ ] All panes within 2 cells of each other (`pane_width`/`pane_height` — 1-cell border variance is normal)
 - [ ] Each pane shows an agent prompt (not blank shell, not "command not found")
 - [ ] Typing into a pane is accepted by the agent prompt
 - [ ] `prefix + d` detaches; reattach with `tmux attach -t <session>` or `blocks attach`
