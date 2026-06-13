@@ -1,4 +1,4 @@
-[English](README.md) | [中文](README_zh.md)
+English | [中文](README_zh.md)
 
 # Agent Skills
 
@@ -18,11 +18,11 @@ Three steps to install all three skills on any agent:
 
 1. **Download the SKILL.md files** — clone the repo (or just download the folders you want):
    ```bash
-   # Option A: full repo (lets you read source, file issues, send PRs)
-   git clone https://github.com/hooooolea/agent-skills ~/agent-skills
+   # Option A: git clone (for contributors — lets you file issues, send PRs)
+   git clone --depth 1 https://github.com/hooooolea/agent-skills ~/agent-skills
 
-   # Option B: tarball only (no git, smallest)
-   curl -fsSL https://github.com/hooooolea/agent-skills/archive/refs/heads/main.tar.gz | tar xz
+   # Option B: tarball (for users — no git, smallest download)
+   mkdir -p ~/agent-skills && curl -fsSL https://github.com/hooooolea/agent-skills/archive/refs/heads/main.tar.gz | tar xz -C ~/agent-skills --strip-components=1
    ```
 
 2. **Copy into your agent's skills directory**:
@@ -30,30 +30,32 @@ Three steps to install all three skills on any agent:
    | Agent | Path | Layout |
    |-------|------|--------|
    | Hermes | `~/.hermes/skills/` | flat: `<name>/SKILL.md` |
-   | Claude Code | `~/.claude/skills/` | needs `<category>/<name>/` subdir |
+   | Claude Code | `~/.claude/skills/` | flat: `<name>/SKILL.md` |
    | Codex | `~/.codex/skills/` | flat: `<name>/SKILL.md` |
    | Aider | per-repo `.aider/skills/` | flat: `<name>/SKILL.md` |
 
    ```bash
-   # Hermes / Codex / Aider (flat)
-   cp -r ~/agent-skills/skills/* ~/.hermes/skills/    # or ~/.codex/skills/
+   # All agents use flat <name>/SKILL.md layout. Set DEST for your agent:
+   DEST=~/.hermes/skills        # Hermes
+   # DEST=~/.claude/skills      # Claude Code
+   # DEST=~/.codex/skills       # Codex
+   # DEST=.aider/skills         # Aider (per-repo — run inside your project)
 
-   # Claude Code (category subdir required)
-   cp -r ~/agent-skills/skills/agentic/blocks         ~/.claude/skills/blocks
-   cp -r ~/agent-skills/skills/productivity/dev-task  ~/.claude/skills/dev-task
-   cp -r ~/agent-skills/skills/productivity/session-summary ~/.claude/skills/session-summary
+   cp -r ~/agent-skills/skills/agentic/blocks             "$DEST"/
+   cp -r ~/agent-skills/skills/productivity/dev-task       "$DEST"/
+   cp -r ~/agent-skills/skills/productivity/session-summary "$DEST"/
    ```
 
 3. **Restart your agent**, then in chat say one of:
-   - `用 2x2 跑 4 个 agent 对比 X` → triggers `blocks`
+   - `blocks 2x2` / `分块 2x2` → triggers `blocks`
    - `实现 / 开发 / 改代码` → triggers `dev-task`
-   - `session 收尾 / 存个档` → triggers `session-summary`
+   - `session summary` / `summarize` → triggers `session-summary`
 
 > 💡 **Don't want to copy manually?** Vercel's [`npx skills add hooooolea/agent-skills`](https://github.com/vercel-labs/skills) CLI handles clone + copy + agent detection for you (50+ agents supported). But it is a wrapper, not a requirement — the SKILL.md open standard works without any tooling.
 
 - **Open standard** — Implements the [agentskills.io spec](https://agentskills.io/specification); not tied to any vendor.
 - **Zero dependencies** — Pure Markdown plus optional shell scripts; no npm or pip required.
-- **Small footprint** — Each SKILL.md body is at most 500 lines or 5000 tokens.
+- **Small footprint** — Each SKILL.md is kept concise (target: under 500 lines).
 - **Discoverable** — Repo structure works with Vercel `npx skills` CLI and SkillsMP.com auto-index.
 
 ## Skills
@@ -64,11 +66,11 @@ Three steps to install all three skills on any agent:
 
 - **[dev-task](skills/productivity/dev-task/SKILL.md)** — Multi-sub-agent development flow (5 phases: decompose → explore → code → review → ship).
 
-  ![](assets/dev-task.svg)
+  ![dev-task: 5-phase flow — decompose → explore → code → review → ship](assets/dev-task.svg)
 
 - **[session-summary](skills/productivity/session-summary/SKILL.md)** — Save session state at the end so the next one can pick up where you left off.
 
-  ![](assets/session-summary.svg)
+  ![session-summary: structured .session_summary.md template](assets/session-summary.svg)
 
 ## When NOT to use
 
@@ -82,7 +84,7 @@ Per-skill boundaries:
 ### dev-task
 - Change < 50 lines (single-file trivial fix) → just edit directly.
 - Not a coding task (research / doc writing) → use ad-hoc prompt or wrap with session-summary.
-- Not inside a git repo (no manifest) → cannot run (skill depends on manifest).
+- Project lacks a manifest file (package.json / Cargo.toml / go.mod / pom.xml / requirements.txt) → cannot run (skill depends on manifest).
 
 ### session-summary
 - Session < 30 min, trivial task → skip; end naturally.
@@ -105,7 +107,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contribution workflow.
 
 ## Community
 
-No Discord — GitHub Issues / Discussions is the channel:
+No Discord — GitHub Issues / Discussions are the channels:
 - [Issues](https://github.com/hooooolea/agent-skills/issues) — bug / feature request.
 - [Discussions](https://github.com/hooooolea/agent-skills/discussions) — Q&A / ideas.
 

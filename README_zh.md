@@ -18,11 +18,11 @@
 
 1. **下载 SKILL.md 文件** — clone 仓库（或只下载你想要的几个文件夹）：
    ```bash
-   # 方式 A：整仓（能看源码、提 issue、发 PR）
-   git clone https://github.com/hooooolea/agent-skills ~/agent-skills
+   # 方式 A：git clone（给贡献者 — 能提 issue、发 PR）
+   git clone --depth 1 https://github.com/hooooolea/agent-skills ~/agent-skills
 
-   # 方式 B：只要 tarball（无 git，体积最小）
-   curl -fsSL https://github.com/hooooolea/agent-skills/archive/refs/heads/main.tar.gz | tar xz
+   # 方式 B：tarball（给用户 — 无需 git，体积最小）
+   mkdir -p ~/agent-skills && curl -fsSL https://github.com/hooooolea/agent-skills/archive/refs/heads/main.tar.gz | tar xz -C ~/agent-skills --strip-components=1
    ```
 
 2. **复制到 agent 的 skills 目录**：
@@ -30,30 +30,32 @@
    | Agent | 路径 | 布局 |
    |-------|------|------|
    | Hermes | `~/.hermes/skills/` | 扁平：`<name>/SKILL.md` |
-   | Claude Code | `~/.claude/skills/` | 需要 `<category>/<name>/` 子目录 |
+   | Claude Code | `~/.claude/skills/` | 扁平：`<name>/SKILL.md` |
    | Codex | `~/.codex/skills/` | 扁平：`<name>/SKILL.md` |
    | Aider | per-repo `.aider/skills/` | 扁平：`<name>/SKILL.md` |
 
    ```bash
-   # Hermes / Codex / Aider（扁平）
-   cp -r ~/agent-skills/skills/* ~/.hermes/skills/    # 或 ~/.codex/skills/
+   # 所有 agent 都用扁平 <name>/SKILL.md 布局。按你的 agent 修改 DEST：
+   DEST=~/.hermes/skills        # Hermes
+   # DEST=~/.claude/skills      # Claude Code
+   # DEST=~/.codex/skills       # Codex
+   # DEST=.aider/skills         # Aider（per-repo — 在项目目录里跑）
 
-   # Claude Code（需要 category 子目录）
-   cp -r ~/agent-skills/skills/agentic/blocks         ~/.claude/skills/blocks
-   cp -r ~/agent-skills/skills/productivity/dev-task  ~/.claude/skills/dev-task
-   cp -r ~/agent-skills/skills/productivity/session-summary ~/.claude/skills/session-summary
+   cp -r ~/agent-skills/skills/agentic/blocks             "$DEST"/
+   cp -r ~/agent-skills/skills/productivity/dev-task       "$DEST"/
+   cp -r ~/agent-skills/skills/productivity/session-summary "$DEST"/
    ```
 
 3. **重启 agent**，然后在对话里说一句：
-   - 「用 2x2 跑 4 个 agent 对比 X」→ 触发 `blocks`
-   - 「实现 / 开发 / 改代码」→ 触发 `dev-task`
-   - 「session 收尾 / 存个档」→ 触发 `session-summary`
+   - `分块 2x2` / `blocks 2x2` → 触发 `blocks`
+   - `实现` / `开发` / `改代码` → 触发 `dev-task`
+   - `session summary` / `summarize` → 触发 `session-summary`
 
 > 💡 **不想手动复制？** Vercel 的 [`npx skills add hooooolea/agent-skills`](https://github.com/vercel-labs/skills) CLI 自动帮你 git clone + cp + 检测 agent（支持 50+ agents）。但它只是 wrapper，不是必须 — SKILL.md 开放标准不需要任何工具就能跑。
 
 - **开放标准** — 按 [agentskills.io spec](https://agentskills.io/specification) 编写，不绑定任何 vendor。
 - **零依赖** — 纯 Markdown 加可选 shell 脚本，无需 npm 或 pip。
-- **小 footprint** — 每个 SKILL.md body 至多 500 行 / 5000 tokens。
+- **小 footprint** — 每个 SKILL.md 保持精简（目标：500 行以内）。
 - **可发现** — 仓库结构兼容 Vercel `npx skills` CLI 与 SkillsMP.com auto-index。
 
 ## Skills
@@ -64,11 +66,11 @@
 
 - **[dev-task](skills/productivity/dev-task/SKILL.md)** — 多子代理开发流（5 阶段：拆任务 → 探索 → 编码 → 审查 → 收尾）。
 
-  ![](assets/dev-task.svg)
+  ![dev-task：5 阶段流程 — 拆任务 → 探索 → 编码 → 审查 → 收尾](assets/dev-task.svg)
 
 - **[session-summary](skills/productivity/session-summary/SKILL.md)** — session 结束前存个档，下次接着干。
 
-  ![](assets/session-summary.svg)
+  ![session-summary：结构化 .session_summary.md 模板](assets/session-summary.svg)
 
 ## 何时不该用
 
@@ -82,7 +84,7 @@
 ### dev-task
 - 改动 < 50 行（单文件 trivial fix）→ 直接改。
 - 不是 coding task（调研 / 写文档）→ 用 ad-hoc prompt 或包一层 session-summary。
-- 不在 git 仓库（没有 manifest）→ 跑不起来（skill 强依赖 manifest）。
+- 项目缺少 manifest 文件（package.json / Cargo.toml / go.mod / pom.xml / requirements.txt）→ 跑不起来（skill 强依赖 manifest）。
 
 ### session-summary
 - session < 30 分钟的简单任务 → 不用写，自然结束即可。
@@ -105,7 +107,7 @@ Issues 和 PRs 都欢迎。改 SKILL.md 前先读 [agentskills.io spec](https://
 
 ## Community
 
-没有 Discord — 用 GitHub Issues / Discussions 凑合：
+没有 Discord，通过 GitHub Issues / Discussions 交流：
 
 - [Issues](https://github.com/hooooolea/agent-skills/issues) — bug / feature request。
 - [Discussions](https://github.com/hooooolea/agent-skills/discussions) — Q&A / 想法。
