@@ -75,7 +75,7 @@ Here is what a good session summary looks like:
 ```markdown
 # Session Summary — Agent Skills Repo
 
-Created: 2026-06-13 14:30 UTC
+Created: 2026-06-14 16:00 UTC
 Last Agent: Claude Code
 
 ---
@@ -86,21 +86,23 @@ that install on any AI agent supporting the agentskills.io spec. The repo is
 published at github.com/hooooolea/agent-skills.
 
 ## Current Objective
-Add flexible N support to the blocks skill so users can spawn any number of
-parallel agents, not just even numbers 2/4/6/8. The general spawn algorithm
-is done in recipes.md. Next: update the SKILL.md rules to remove the
-"N must be even" restriction and update pitfalls.md Pitfall 1.
+Clean up blocks skill references and documentation after the N-flexibility
+rewrite. The general spawn algorithm is done and pushed. Next: fix 12 broken
+cross-reference paths in `skills/agentic/blocks/references/` where files
+reference each other with an extra `references/` prefix (e.g.
+`references/tmux-ops.md` should be `tmux-ops.md`).
 
 ## Completed This Session
-1. Rewrote recipes.md — `skills/agentic/blocks/references/recipes.md` — replaced 5 hardcoded N recipes with one general algorithm (chain + tiled approach, works for any N ≥ 1)
-2. Updated Quick Spawn Reference A (flat) — same file — accepts any N, calculates cols/rows dynamically
-3. Updated Quick Spawn Reference B (manager) — same file — same algorithm for worker grid
+1. Rewrote recipes.md — `skills/agentic/blocks/references/recipes.md` — replaced 5 hardcoded per-N recipes with one general algorithm (horizontal chain + select-layout tiled, any N ≥ 1)
+2. Updated SKILL.md frontmatter + rules — `skills/agentic/blocks/SKILL.md` — removed "N must be even", added flexible N (1-12)
+3. Updated pitfalls.md Pitfall 1 — same file — replaced "odd N cannot be equalised" with "odd N is fine — tiled handles it"
+4. Updated manager-flow.md — same dir — removed "N must be even, else round up"
+5. Updated tmux-grid-bug.md — same dir — updated 2 old N-specific references
 
 ## Pending / In Progress
-- SKILL.md rules update — `skills/agentic/blocks/SKILL.md` — Rule 1 still says "N must be even", needs rewriting
-- pitfalls.md Pitfall 1 — `skills/agentic/blocks/references/pitfalls.md` — still says "odd N cannot be equalised"
-- manager-flow.md trigger list — `skills/agentic/blocks/references/manager-flow.md` — still says "N must be even, else round up"
-- tmux-grid-bug.md — 2 remaining old references to N=2/4/6/8
+- Fix 12 cross-reference paths in references/ files — `skills/agentic/blocks/references/{manager-flow, pitfalls, worker-execution-protocol, recipes}.md` — all use `references/xxx.md` prefix when referencing peers, creating broken `references/references/` paths
+- Update session-summary SKILL.md example — currently references stale "Pending" items that are now completed
+- Update SKILL.md References table — still says "5 bash recipes" but there are now 2 general recipes
 
 ## Known Issues
 - macOS tmux 3.x `resize-pane` bug (pane collapses to 1 row) — worked around with tiled → resize-pane + even-vertical/even-horizontal fallback chain

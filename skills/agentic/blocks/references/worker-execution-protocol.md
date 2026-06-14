@@ -131,6 +131,6 @@ The manager polls every ~60s and will see your question on the next pass. Do NOT
 
 ## See Also
 
-- `references/manager-flow.md` — Manager side protocol (what the manager sees about you)
-- `references/pitfalls.md` — Pitfalls 18-22 specifically cover worker timing and crash recovery
-- `references/tmux-ops.md` — tmux pane operations, recovery after server crash
+- `manager-flow.md` — Manager side protocol (what the manager sees about you)
+- `pitfalls.md` — Pitfalls 18-22 specifically cover worker timing and crash recovery
+- `tmux-ops.md` — tmux pane operations, recovery after server crash

@@ -21,6 +21,7 @@ if [ -z "${AGENT_CMD:-}" ]; then
 fi
 
 N=${1:-4}  # any N ≥ 1 — 3, 5, 7, 9 all work
+# NOTE: AGENT_CMD guard above is duplicated in Recipe B. Keep both in sync.
 
 # --- Calculate window size from N ---
 # Target: each pane ≥ 80×20. tiled arranges N panes as ≈ceil(sqrt(N)) cols.
@@ -87,6 +88,7 @@ tmux attach -t "$SESSION"
 
 ```bash
 N=${BLOCKS_WORKERS:-4}  # any N ≥ 1
+# NOTE: AGENT_CMD guard below is duplicated from Recipe A. Keep both in sync.
 # Required: AGENT_CMD must be set (blocks is agent-agnostic; no default)
 if [ -z "${AGENT_CMD:-}" ]; then
   echo "ERROR: AGENT_CMD is unset. Pick one before spawning:" >&2
@@ -275,7 +277,7 @@ tmux send-keys -t "$SESSION":1.2 "$AGENT_CMD --worktree pane2" Enter
 # codex / aider: no -w flag; do git worktree add manually in each pane
 ```
 
-`-w` is hermes/claude-code only. For codex and aider, do `git worktree add <path> -b <branch>` in each pane before starting the agent. See `references/agent-compatibility.md` § Worktree.
+`-w` is hermes/claude-code only. For codex and aider, do `git worktree add <path> -b <branch>` in each pane before starting the agent. See `agent-compatibility.md` § Worktree.
 
 ## One-Shot Helpers
 

@@ -50,7 +50,7 @@ USER: "kill it"              →   `blocks kill` (or just tell user to
 
 When you see any of these, **execute the Recipe in your terminal tool**. The Recipe's last output is the "Manager mode activated" banner. After printing the banner, **you ARE the Manager** — from this point on, every user message is a task for the Manager role.
 
-> **Chunking hint (read this first):** the default 10-minute per-worker timeout is the *upper bound*, not a target. On macOS, fully-detached tmux servers can be reaped by launchd after 10+ minutes — see Pitfall 18. Split work into **6-minute rounds** (hard upper bound 7 min) with explicit `done/` signalling, and either attach to the tmux session after spawning (so launchd treats it as user-attached) or be ready to recover from the filesystem if it dies. See `references/tmux-ops.md` § Recovery.
+> **Chunking hint (read this first):** the default 10-minute per-worker timeout is the *upper bound*, not a target. On macOS, fully-detached tmux servers can be reaped by launchd after 10+ minutes — see Pitfall 18. Split work into **6-minute rounds** (hard upper bound 7 min) with explicit `done/` signalling, and either attach to the tmux session after spawning (so launchd treats it as user-attached) or be ready to recover from the filesystem if it dies. See `tmux-ops.md` § Recovery.
 
 **Critical: do NOT just describe the workflow as text.** You must actually `tmux new-session`, `tmux send-keys`, and `mkdir` etc. via the terminal tool. The Recipe has the exact bash. Run it, then become the Manager.
 
@@ -128,7 +128,7 @@ Your job:
 
 Timeout: **6-minute rounds** (hard upper bound 7 min) per worker. Longer windows (10+ min) risk the macOS
 server crashing mid-round, killing all workers with no recovery — see
-`references/tmux-ops.md` § Recovery and Pitfall 18. If `done/worker-N-start`
+`tmux-ops.md` § Recovery and Pitfall 18. If `done/worker-N-start`
 exists but `done/worker-N-final` is missing past 6 min, treat the worker as
 stalled. After timeout, report the stalled worker to the user and ask whether
 to continue waiting or proceed without them.
@@ -156,7 +156,7 @@ When the user sees this, they know Manager mode is active. They reply with a tas
 
 ### Worker Execution Protocol (the canonical happy path)
 
-The role prompt sent to each worker pane is intentionally short (4 lines). The **full worker-side playbook** — the 30-second start-touch rule, the task→execute→final flow, the DONE/PARTIAL/BLOCKED status taxonomy, pre-flight environment checks, and time-budget discipline — lives in [`references/worker-execution-protocol.md`](references/worker-execution-protocol.md).
+The role prompt sent to each worker pane is intentionally short (4 lines). The **full worker-side playbook** — the 30-second start-touch rule, the task→execute→final flow, the DONE/PARTIAL/BLOCKED status taxonomy, pre-flight environment checks, and time-budget discipline — lives in [`worker-execution-protocol.md`](worker-execution-protocol.md).
 
 **If you are a worker:** read that reference as your first action after the role prompt lands. The 30-second start-touch (`touch $SHARED/done/worker-N-start`) MUST happen before you read the task file — the Manager has no other signal that your pane is alive.
 

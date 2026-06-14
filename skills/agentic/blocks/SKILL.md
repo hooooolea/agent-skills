@@ -121,7 +121,7 @@ Full worker playbook (pre-flight, DONE/PARTIAL/BLOCKED, multi-round, edge cases)
 
 | Topic | File |
 |-------|------|
-| 5 bash recipes (2x2 / 6 / 2 / manager / list-attach-kill) | `references/recipes.md` |
+| 2 general recipes (flat + manager, any N ≥ 1) + helpers | `references/recipes.md` |
 | All 23 pitfalls with fix snippets | `references/pitfalls.md` |
 | Manager + Worker execution protocol (full) | `references/manager-flow.md` |
 | tmux split direction + recovery + dynamic pane ops + auto-open | `references/tmux-ops.md` |
