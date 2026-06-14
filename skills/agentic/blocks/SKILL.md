@@ -124,7 +124,10 @@ Full worker playbook (pre-flight, DONE/PARTIAL/BLOCKED, multi-round, edge cases)
 | 2 general recipes (flat + manager, any N ≥ 1) + helpers | `references/recipes.md` |
 | All 23 pitfalls with fix snippets | `references/pitfalls.md` |
 | Manager + Worker execution protocol (full) | `references/manager-flow.md` |
+| Worker-side playbook (5-step protocol, status taxonomy, pre-flight) | `references/worker-execution-protocol.md` |
 | tmux split direction + recovery + dynamic pane ops + auto-open | `references/tmux-ops.md` |
+| macOS tmux 3.x `resize-pane` bug transcript | `references/tmux-grid-bug.md` |
+| Per-agent CLI flags, slash-command registration, TUI warm-up | `references/agent-compatibility.md` |
 | `recovery-scan.sh` — salvage work after tmux server death | `scripts/recovery-scan.sh` |
 | Recommended `tmux.conf` snippet (`set -g mouse on` etc.) | `templates/tmux.conf.blocks` |
 

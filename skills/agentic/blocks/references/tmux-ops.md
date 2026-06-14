@@ -101,7 +101,7 @@ find <project-root> -newer "$START_MARKER" -type f \
 #    productive enough to just hand the result back to the user?
 ```
 
-The `scripts/recovery-scan.sh` script automates steps 1-3 and prints a status table grouped by expected per-worker domain (the Manager must pass the project root and the per-worker expected paths/globs).
+The `../scripts/recovery-scan.sh` script automates steps 1-3 and prints a status table grouped by expected per-worker domain (the Manager must pass the project root and the per-worker expected paths/globs).
 
 **Why this works without relaunching tmux:** the protocol is deliberately file-based (see the "Why Files, not tmux send-keys" rationale earlier). When tmux dies, the in-memory pane state is gone, but `tasks/`, `results/`, `done/`, and the project's working tree are intact. A 30-second scan recovers ~90% of the work that would otherwise be lost. The remaining 10% is whatever the worker was about to write but hadn't yet fsynced.
 
