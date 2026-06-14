@@ -86,24 +86,23 @@ that install on any AI agent supporting the agentskills.io spec. The repo is
 published at github.com/hooooolea/agent-skills.
 
 ## Current Objective
-Add a fourth skill to the library: a `pr-review` skill that automates PR code
-review with a structured checklist. The SKILL.md skeleton is written. Next:
-write the review checklist in `references/checklist.md` and create the
-5-phase review prompt template.
+Refactor the blocks skill to support arbitrary N (not just even numbers 2/4/6/8).
+The general spawn algorithm is in `references/recipes.md`. Next: update SKILL.md
+rules to remove "N must be even" and update pitfalls.md.
 
 ## Completed This Session
-1. Created skill skeleton — `skills/productivity/pr-review/SKILL.md` — frontmatter, compatibility block, 3 trigger phrases, When to Use / When NOT to Use sections
-2. Added skill to README — `README.md` + `README_zh.md` — added pr-review card under ## Skills, updated Overview count from 3 to 4
-3. Updated index.md — same file — added pr-review entry, synced descriptions
+1. Rewrote recipes.md — `skills/agentic/blocks/references/recipes.md` — replaced 5 hardcoded recipes with one general algorithm (horizontal chain + select-layout tiled, any N ≥ 1)
+2. Updated SKILL.md frontmatter + rules — `skills/agentic/blocks/SKILL.md` — removed "N must be even", added flexible N (1-12)
+3. Updated pitfalls.md Pitfall 1 — same file — changed "odd N cannot be equalised" to "odd N is fine"
 
 ## Pending / In Progress
-- Write review checklist — `skills/productivity/pr-review/references/checklist.md` — needs 8-12 items covering correctness, security, performance, style
-- Create 5-phase review prompt — `skills/productivity/pr-review/references/review-phases.md` — per the dev-task phase template pattern
-- Test with a real PR — pick an open PR on the repo, run the skill end-to-end
+- Fix cross-reference paths in references/ — `skills/agentic/blocks/references/` — files use `references/xxx.md` when referencing peers in the same directory
+- Update session-summary SKILL.md example — replace hypothetical pr-review scenario with a real one
+- Test with N=3, N=5, N=7 on macOS tmux 3.x
 
 ## Known Issues
-- PR diff parsing varies by git host (GitHub vs GitLab vs Bitbucket) — the skill currently assumes GitHub's API format. Need to abstract or document the limitation.
-- Large PRs (>500 lines changed) may exceed the sub-agent context window — need a chunking strategy or a hard cap in the ## When NOT to Use section.
+- macOS tmux 3.x `resize-pane` bug (pane collapses to 1 row) — worked around with tiled → resize-pane + even-vertical/even-horizontal fallback chain
+- blocks --manager mode recovery still fragile on >10min detached sessions (Pitfall 18) — not addressed in this round
 ```
 
 ## Pitfalls
